@@ -213,6 +213,7 @@
 
 .widget__content {
     flex: 1;
+    overflow: hidden;
 }
 
 /* ========================================
@@ -311,13 +312,13 @@
     aspect-ratio: 1;
     border-radius: var(--radius-xl);
     object-fit: cover;
-    border: 3px solid transparent;
-    background:
-        linear-gradient(var(--ctp-mantle), var(--ctp-mantle)) padding-box,
-        linear-gradient(135deg, var(--ctp-mauve), var(--ctp-pink), var(--ctp-lavender)) border-box;
+    border: 3px solid var(--ctp-mauve);
     box-shadow:
         0 0 30px rgba(203, 166, 247, 0.2),
         0 0 60px rgba(203, 166, 247, 0.1);
+    opacity: 1;
+    position: relative;
+    z-index: 1;
 }
 
 .avatar-ring {
@@ -332,18 +333,17 @@
             rgba(245, 194, 231, 0.3),
             rgba(180, 190, 254, 0.5)) border-box;
     animation: avatar-ring-pulse 3s ease-in-out infinite;
+    opacity: 1;
 }
 
 @keyframes avatar-ring-pulse {
 
     0%,
     100% {
-        opacity: 0.6;
         transform: scale(1);
     }
 
     50% {
-        opacity: 1;
         transform: scale(1.02);
     }
 }
@@ -578,6 +578,8 @@
     display: flex;
     gap: var(--space-md);
     align-items: flex-start;
+    overflow: hidden;
+    max-width: 100%;
 }
 
 .spotify-widget__art {
@@ -592,9 +594,11 @@
 .spotify-widget__info {
     flex: 1;
     min-width: 0;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
+    overflow: hidden;
 }
 
 .spotify-widget__song {
@@ -605,6 +609,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
 }
 
 .spotify-widget__artist {
@@ -613,6 +619,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
 }
 
 .spotify-widget__progress {
@@ -872,6 +880,9 @@
     margin-bottom: 0;
     overflow: hidden;
     border-radius: var(--radius-md);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
 }
 
 .project-card__preview {
@@ -879,7 +890,7 @@
     height: auto;
     aspect-ratio: 2 / 1;
     object-fit: cover;
-    object-position: center;
+    object-position: top center;
     background: var(--ctp-surface0);
 }
 
@@ -907,10 +918,10 @@
     position: relative;
     bottom: auto;
     right: auto;
-    margin-top: var(--space-sm);
-    margin-bottom: var(--space-xs);
+    margin-top: var(--space-md);
+    margin-bottom: var(--space-md);
     display: flex;
-    gap: 6px;
+    gap: 8px;
     flex-wrap: wrap;
     justify-content: flex-start;
 }
@@ -918,13 +929,17 @@
 .project-card__badge {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
+    gap: 5px;
+    padding: 6px 10px;
     border-radius: var(--radius-pill);
     font-family: var(--font-display);
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--ctp-crust);
+}
+
+.project-card__badge .material-symbols-rounded {
+    font-size: 14px;
 }
 
 .project-card__badge--mauve {

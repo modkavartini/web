@@ -10,19 +10,19 @@ class GitHubDataFetcher {
                 owner: 'modkavartini',
                 name: 'catppuccin',
                 elementId: 'project-catppuccin',
-                fallback: { stars: 150, language: 'PowerShell', version: null }
+                fallback: { stars: 150, downloads: 1000, language: 'PowerShell', version: null }
             },
             {
                 owner: 'modkavartini',
                 name: 'amarena',
                 elementId: 'project-amarena',
-                fallback: { stars: 45, language: 'PowerShell', version: null }
+                fallback: { stars: 45, downloads: 500, language: 'PowerShell', version: null }
             },
             {
                 owner: 'modkavartini',
                 name: 'klwp',
                 elementId: 'project-klwp',
-                fallback: { stars: 20, language: 'KLWP', version: null }
+                fallback: { stars: 20, downloads: 100, language: 'KLWP', version: null }
             }
         ];
 
@@ -61,13 +61,23 @@ class GitHubDataFetcher {
                 return;
             }
 
-            // Fetch latest release
+            // Fetch all releases for download count and latest version
             let releaseTag = null;
+            let totalDownloads = 0;
             try {
-                const releaseResponse = await fetch(`https://api.github.com/repos/${repo.owner}/${repo.name}/releases/latest`);
-                if (releaseResponse.ok) {
-                    const releaseData = await releaseResponse.json();
-                    releaseTag = releaseData.tag_name;
+                const releasesResponse = await fetch(`https://api.github.com/repos/${repo.owner}/${repo.name}/releases`);
+                if (releasesResponse.ok) {
+                    const releasesData = await releasesResponse.json();
+                    if (releasesData.length > 0) {
+                        // Get latest release tag
+                        releaseTag = releasesData[0].tag_name;
+                        // Sum up all downloads from all releases
+                        releasesData.forEach(release => {
+                            release.assets.forEach(asset => {
+                                totalDownloads += asset.download_count;
+                            });
+                        });
+                    }
                 }
             } catch (e) {
                 // No releases available
@@ -76,6 +86,7 @@ class GitHubDataFetcher {
             // Update the UI with real data
             this.updateProjectCard(repo.elementId, {
                 stars: stars,
+                downloads: totalDownloads || repo.fallback.downloads,
                 language: language || repo.fallback.language,
                 version: releaseTag
             });
@@ -94,7 +105,13 @@ class GitHubDataFetcher {
         // Update stars
         const starsEl = card.querySelector('.project-card__stars-count');
         if (starsEl) {
-            starsEl.textContent = data.stars;
+            starsEl.textContent = this.formatNumber(data.stars);
+        }
+
+        // Update downloads
+        const downloadsEl = card.querySelector('.project-card__downloads-count');
+        if (downloadsEl) {
+            downloadsEl.textContent = this.formatNumber(data.downloads);
         }
 
         // Update language
@@ -109,6 +126,17 @@ class GitHubDataFetcher {
             versionEl.textContent = data.version;
             versionEl.style.display = 'inline-flex';
         }
+    }
+
+    // Format large numbers (e.g., 1500 -> 1.5K)
+    formatNumber(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        }
+        if (num >= 1000) {
+            return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        }
+        return num.toString();
     }
 }
 
