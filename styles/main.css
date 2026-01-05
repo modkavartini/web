@@ -1,0 +1,301 @@
+/*
+ * modkavartini Portfolio - Design System
+ * Catppuccin Mocha Palette + Typography + Utilities
+ */
+
+/* ========================================
+   IMPORTS
+   ======================================== */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Urbanist:wght@300;400;500;600;700&display=swap');
+
+/* ========================================
+   CATPPUCCIN MOCHA PALETTE
+   ======================================== */
+:root {
+  /* Base colors */
+  --ctp-rosewater: #f5e0dc;
+  --ctp-flamingo: #f2cdcd;
+  --ctp-pink: #f5c2e7;
+  --ctp-mauve: #cba6f7;
+  --ctp-red: #f38ba8;
+  --ctp-maroon: #eba0ac;
+  --ctp-peach: #fab387;
+  --ctp-yellow: #f9e2af;
+  --ctp-green: #a6e3a1;
+  --ctp-teal: #94e2d5;
+  --ctp-sky: #89dceb;
+  --ctp-sapphire: #74c7ec;
+  --ctp-blue: #89b4fa;
+  --ctp-lavender: #b4befe;
+
+  /* Text colors */
+  --ctp-text: #cdd6f4;
+  --ctp-subtext1: #bac2de;
+  --ctp-subtext0: #a6adc8;
+
+  /* Overlay colors */
+  --ctp-overlay2: #9399b2;
+  --ctp-overlay1: #7f849c;
+  --ctp-overlay0: #6c7086;
+
+  /* Surface colors */
+  --ctp-surface2: #585b70;
+  --ctp-surface1: #45475a;
+  --ctp-surface0: #313244;
+
+  /* Background colors */
+  --ctp-base: #1e1e2e;
+  --ctp-mantle: #181825;
+  --ctp-crust: #11111b;
+
+  /* Semantic tokens */
+  --color-accent: var(--ctp-mauve);
+  --color-accent-glow: rgba(203, 166, 247, 0.3);
+  --color-bg: var(--ctp-base);
+  --color-bg-elevated: var(--ctp-mantle);
+  --color-bg-card: var(--ctp-surface0);
+  --color-text-primary: var(--ctp-text);
+  --color-text-secondary: var(--ctp-subtext1);
+  --color-text-muted: var(--ctp-overlay1);
+  --color-border: var(--ctp-surface1);
+  --color-link: var(--ctp-blue);
+  --color-link-hover: var(--ctp-teal);
+  --color-success: var(--ctp-green);
+  --color-warning: var(--ctp-yellow);
+  --color-error: var(--ctp-red);
+
+  /* Spacing scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  /* Border radius */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+  --radius-pill: 9999px;
+
+  /* Typography */
+  --font-display: 'JetBrains Mono', monospace;
+  --font-body: 'Urbanist', sans-serif;
+  
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2rem;
+  --text-4xl: 2.5rem;
+
+  /* Shadows & Effects */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --shadow-glow: 0 0 20px var(--color-accent-glow);
+  
+  --blur-sm: 8px;
+  --blur-md: 16px;
+  --blur-lg: 24px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+  --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Layout */
+  --container-max: 1400px;
+  --grid-gap: 20px;
+  --nav-height: 64px;
+}
+
+/* ========================================
+   BASE RESET & STYLES
+   ======================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Background gradient overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at 20% 20%, rgba(203, 166, 247, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(137, 180, 250, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(180, 190, 254, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ========================================
+   TYPOGRAPHY
+   ======================================== */
+h1, h2, h3, h4, h5, h6,
+.heading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+}
+
+h1, .h1 { font-size: var(--text-4xl); }
+h2, .h2 { font-size: var(--text-3xl); }
+h3, .h3 { font-size: var(--text-2xl); }
+h4, .h4 { font-size: var(--text-xl); }
+h5, .h5 { font-size: var(--text-lg); }
+h6, .h6 { font-size: var(--text-base); }
+
+.label {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+}
+
+p {
+  margin-bottom: var(--space-md);
+  color: var(--color-text-secondary);
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-link-hover);
+}
+
+/* ========================================
+   LAYOUT UTILITIES
+   ======================================== */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-end { justify-content: flex-end; }
+.gap-xs { gap: var(--space-xs); }
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
+.gap-lg { gap: var(--space-lg); }
+.gap-xl { gap: var(--space-xl); }
+
+/* ========================================
+   COLOR ACCENT UTILITIES
+   ======================================== */
+.text-mauve { color: var(--ctp-mauve); }
+.text-pink { color: var(--ctp-pink); }
+.text-red { color: var(--ctp-red); }
+.text-peach { color: var(--ctp-peach); }
+.text-yellow { color: var(--ctp-yellow); }
+.text-green { color: var(--ctp-green); }
+.text-teal { color: var(--ctp-teal); }
+.text-sky { color: var(--ctp-sky); }
+.text-sapphire { color: var(--ctp-sapphire); }
+.text-blue { color: var(--ctp-blue); }
+.text-lavender { color: var(--ctp-lavender); }
+.text-flamingo { color: var(--ctp-flamingo); }
+.text-rosewater { color: var(--ctp-rosewater); }
+
+.bg-mauve { background-color: var(--ctp-mauve); }
+.bg-pink { background-color: var(--ctp-pink); }
+.bg-red { background-color: var(--ctp-red); }
+.bg-peach { background-color: var(--ctp-peach); }
+.bg-yellow { background-color: var(--ctp-yellow); }
+.bg-green { background-color: var(--ctp-green); }
+.bg-teal { background-color: var(--ctp-teal); }
+.bg-sky { background-color: var(--ctp-sky); }
+.bg-blue { background-color: var(--ctp-blue); }
+.bg-lavender { background-color: var(--ctp-lavender); }
+
+/* Glow variants */
+.glow-mauve { box-shadow: 0 0 20px rgba(203, 166, 247, 0.35); }
+.glow-pink { box-shadow: 0 0 20px rgba(245, 194, 231, 0.35); }
+.glow-red { box-shadow: 0 0 20px rgba(243, 139, 168, 0.35); }
+.glow-peach { box-shadow: 0 0 20px rgba(250, 179, 135, 0.35); }
+.glow-yellow { box-shadow: 0 0 20px rgba(249, 226, 175, 0.35); }
+.glow-green { box-shadow: 0 0 20px rgba(166, 227, 161, 0.35); }
+.glow-blue { box-shadow: 0 0 20px rgba(137, 180, 250, 0.35); }
+.glow-lavender { box-shadow: 0 0 20px rgba(180, 190, 254, 0.35); }
+
+/* ========================================
+   SCROLLBAR STYLING
+   ======================================== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ctp-mantle);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ctp-surface1);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--ctp-mantle);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ctp-surface2);
+}
+
+/* ========================================
+   SELECTION STYLING
+   ======================================== */
+::selection {
+  background: var(--ctp-mauve);
+  color: var(--ctp-crust);
+}
+
+::-moz-selection {
+  background: var(--ctp-mauve);
+  color: var(--ctp-crust);
+}

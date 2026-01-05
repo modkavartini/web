@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Primary Meta Tags -->
+  <title>modkavartini | Abhiram Chandrasenan - Designer & Engineer</title>
+  <meta name="title" content="modkavartini | Abhiram Chandrasenan - Designer & Engineer">
+  <meta name="description"
+    content="Silly Engineer. Passionate Designer. Lead Graphic Artist, IEEE Chairperson, and UI/UX enthusiast crafting beautiful digital experiences.">
+  <meta name="keywords"
+    content="modkavartini, Abhiram Chandrasenan, UI Designer, Catppuccin, Rainmeter, KLWP, IEEE, IDK Why Studios">
+  <meta name="author" content="Abhiram Chandrasenan">
+  <meta name="theme-color" content="#1e1e2e">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://modka.netlify.app/">
+  <meta property="og:title" content="modkavartini | Abhiram Chandrasenan">
+  <meta property="og:description" content="Silly Engineer. Passionate Designer.">
+  <meta property="og:image" content="/logo.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://modka.netlify.app/">
+  <meta property="twitter:title" content="modkavartini | Abhiram Chandrasenan">
+  <meta property="twitter:description" content="Silly Engineer. Passionate Designer.">
+  <meta property="twitter:image" content="/logo.png">
+
+  <!-- Material Symbols Rounded -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/animations.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/logo.png">
+
+  <style>
+    /* Material Symbols configuration */
+    .material-symbols-rounded {
+      font-variation-settings:
+        'FILL' 1,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .widget__icon .material-symbols-rounded {
+      font-size: 22px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Preloader -->
+  <div id="preloader" class="preloader">
+    <div class="preloader__content">
+      <img src="logo.png" alt="modkavartini logo" class="preloader__logo">
+      <div class="preloader__text">
+        <span class="preloader__modka">modka</span><span class="preloader__vartini"></span>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .preloader {
+      position: fixed;
+      inset: 0;
+      background: #1e1e2e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .preloader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .preloader__content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .preloader__logo {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      animation: logo-spin-bounce 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+    }
+
+    @keyframes logo-spin-bounce {
+      0% {
+        transform: rotate(0deg) scale(1);
+      }
+
+      25% {
+        transform: rotate(90deg) scale(1.15);
+      }
+
+      50% {
+        transform: rotate(180deg) scale(1);
+      }
+
+      75% {
+        transform: rotate(270deg) scale(0.9);
+      }
+
+      100% {
+        transform: rotate(360deg) scale(1);
+      }
+    }
+
+    .preloader__text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 500;
+      text-transform: lowercase;
+      letter-spacing: 0.05em;
+    }
+
+    .preloader__modka {
+      color: #cba6f7;
+    }
+
+    .preloader__vartini {
+      color: #cdd6f4;
+    }
+
+    .preloader__vartini::after {
+      content: '|';
+      animation: cursor-blink 0.6s step-end infinite;
+      color: #cba6f7;
+      margin-left: 2px;
+    }
+
+    .preloader__vartini.done::after {
+      display: none;
+    }
+
+    @keyframes cursor-blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+  </style>
+
+  <script>
+    // Preloader typing animation
+    document.addEventListener('DOMContentLoaded', () => {
+      const vartiniEl = document.querySelector('.preloader__vartini');
+      const preloader = document.getElementById('preloader');
+      const text = 'vartini';
+      let index = 0;
+
+      // Start typing after a short delay
+      setTimeout(() => {
+        const typeInterval = setInterval(() => {
+          if (index < text.length) {
+            vartiniEl.textContent += text[index];
+            index++;
+          } else {
+            clearInterval(typeInterval);
+            vartiniEl.classList.add('done');
+
+            // Fade out preloader after typing completes
+            setTimeout(() => {
+              preloader.classList.add('fade-out');
+              // Remove preloader from DOM after animation
+              setTimeout(() => {
+                preloader.remove();
+              }, 500);
+            }, 400);
+          }
+        }, 100);
+      }, 600);
+    });
+  </script>
+
+  <main class="container" style="padding-top: var(--space-xl); padding-bottom: 120px;">
+
+    <!-- Hero Section -->
+    <section class="bento-grid" style="margin-bottom: var(--space-xl);">
+
+      <!-- Avatar Widget -->
+      <article class="widget widget--mauve col-span-3 float-gentle avatar-widget"
+        style="display: flex; align-items: center; justify-content: center; position: relative; overflow: visible;">
+        <!-- Speech Bubble Cloud (floats outside) -->
+        <div class="quote-bubble" id="quote-bubble">
+          <span class="quote-bubble__text" id="quote-text">loading wisdom...</span>
+          <div class="quote-bubble__tail"></div>
+        </div>
+        <div class="avatar-container">
+          <div class="avatar-ring"></div>
+          <img src="user.gif" alt="modkavartini avatar" class="avatar">
+        </div>
+      </article>
+
+      <!-- Bio Widget -->
+      <article class="widget widget--lavender col-span-9 fade-in-up stagger-1">
+        <div class="widget__header">
+          <span class="widget__icon"><span class="material-symbols-rounded">waving_hand</span></span>
+          <span class="widget__title">About Me</span>
+        </div>
+        <div class="widget__content">
+          <h1 style="font-size: var(--text-3xl); margin-bottom: var(--space-xs);">
+            SILLY ENGINEER.<br>
+            <span class="text-mauve">PASSIONATE DESIGNER.</span>
+          </h1>
+          <p style="margin-top: var(--space-md); margin-bottom: var(--space-sm);">
+            Hey there! I'm <strong style="color: var(--ctp-text);">Abhiram Chandrasenan</strong>, also known as
+            <a href="origin.html" class="alias-link" id="alias-trigger">modkavartini</a>.
+            I make stuff during my *free time*.
+          </p>
+          <p style="font-size: var(--text-sm);">
+            Whether I'm creating graphic designs, products or embedded solutions, I try to build stuff that work
+            flawlessly, and look pretty while doing so.
+          </p>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Roles Section -->
+    <section class="bento-grid" style="margin-bottom: var(--space-xl);">
+
+      <!-- Current Roles Widget -->
+      <article class="widget widget--pink col-span-5 fade-in-up stagger-2 float-delayed">
+        <div class="widget__header">
+          <span class="widget__icon"><span class="material-symbols-rounded">work</span></span>
+          <span class="widget__title">Current Roles</span>
+        </div>
+        <div class="widget__content" id="current-roles-list">
+          <div class="role-item">
+            <span class="role-item__title">Chairperson</span>
+            <span style="color: var(--ctp-overlay1);">@</span>
+            <a href="https://ieee.ce-kgr.org/" target="_blank" rel="noopener" class="role-item__org">IEEE RAS SBC
+              CEK</a>
+          </div>
+          <div class="role-item">
+            <span class="role-item__title">Design Lead</span>
+            <span style="color: var(--ctp-overlay1);">@</span>
+            <a href="https://cs.ieeekerala.org/" target="_blank" rel="noopener" class="role-item__org">IEEE CS Kerala
+              Chapter</a>
+          </div>
+          <div class="role-item">
+            <span class="role-item__title">Lead Graphic Artist</span>
+            <span style="color: var(--ctp-overlay1);">@</span>
+            <a href="https://idkwhystudios.netlify.app/" target="_blank" rel="noopener" class="role-item__org">IDK Why
+              Studios</a>
+          </div>
+        </div>
+
+        <!-- Past Roles -->
+        <div class="widget__header" style="margin-top: var(--space-lg);">
+          <span class="widget__icon"><span class="material-symbols-rounded">history</span></span>
+          <span class="widget__title">Past Roles</span>
+        </div>
+        <div class="widget__content" id="past-roles-list">
+          <div class="role-item" style="border-bottom: none; opacity: 0.7;">
+            <span class="role-item__title">Student Intern</span>
+            <span style="color: var(--ctp-overlay1);">@</span>
+            <span class="role-item__org" style="color: var(--ctp-overlay1);">IEEE EdSoc Kerala Chapter</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Discord Status Widget -->
+      <article class="widget widget--blue col-span-4 fade-in-up stagger-3" id="discord-widget">
+        <div class="widget__header">
+          <span class="widget__icon"><span class="material-symbols-rounded">forum</span></span>
+          <span class="widget__title">Discord Presence</span>
+        </div>
+        <div class="widget__content">
+          <div class="discord-widget">
+            <img src="https://api.lanyard.rest/944986926400811008.png" alt="Discord Avatar"
+              class="discord-widget__avatar" id="discord-avatar">
+            <div class="discord-widget__info">
+              <span class="discord-widget__username" id="discord-username">modkavartini</span>
+              <div class="discord-widget__status">
+                <span class="status-dot status-dot--offline" id="discord-status-dot"></span>
+                <span id="discord-status-text">Offline</span>
+              </div>
+            </div>
+          </div>
+          <div class="discord-widget__activity" id="discord-activity" style="display: none;">
+            <span id="discord-activity-text"></span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Spotify Widget -->
+      <article class="widget widget--green col-span-3 fade-in-up stagger-4" id="spotify-widget">
+        <div class="widget__header">
+          <span class="widget__icon"><span class="material-symbols-rounded">music_note</span></span>
+          <span class="widget__title">Now Playing</span>
+        </div>
+        <div class="widget__content">
+          <div class="spotify-widget spotify-widget--idle" id="spotify-content">
+            <div style="text-align: center; padding: var(--space-md);">
+              <p style="color: var(--ctp-overlay1); font-size: var(--text-sm);">
+                Not currently playing
+              </p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Skills Section -->
+    <section class="bento-grid" style="margin-bottom: var(--space-xl);">
+
+      <!-- Design Proficiency -->
+      <article class="widget widget--mauve col-span-4 fade-in-up stagger-5 float">
+        <div class="widget__header">
+          <span class="widget__icon"><span class="material-symbols-rounded">palette</span></span>
+          <span class="widget__title">Design Proficiency</span>
+        </div>
+        <div class="widget__content">
+          <p style="margin-bottom: var(--space-md); font-size: var(--text-sm);">
+            Figma expert. Focus: Posters, Stickers, Certificates, ID Cards, and high-level UI/UX skinning.
+          </p>
+          <div class="skill-tags">
+            <span class="skill-tag skill-tag--filled-mauve">Figma</span>
+            <span class="skill-tag skill-tag--filled-pink">UI/UX</span>
+            <span class="skill-tag skill-tag--filled-lavender">Posters</span>
+            <span class="skill-tag skill-tag--filled-blue">Branding</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Engineering & 3D -->
+      <article class="widget widget--peach col-span-4 fade-in-up stagger-6 float-delayed">
+        <div class="widget__header">
+          <span class="widget__icon"><span class="material-symbols-rounded">build</span></span>
+          <span class="widget__title">Engineering & 3D</span>
+        </div>
+        <div class="widget__content">
+          <p style="margin-bottom: var(--space-md); font-size: var(--text-sm);">
+            From CAD modeling in Fusion 360 to embedded systems with ESP32 and Arduino. Building robots and printing
+            prototypes.
+          </p>
+          <div class="skill-tags">
+            <span class="skill-tag skill-tag--filled-peach">Fusion 360</span>
+            <span class="skill-tag skill-tag--filled-yellow">3D Printing</span>
+            <span class="skill-tag skill-tag--filled-green">Arduino</span>
+            <span class="skill-tag skill-tag--filled-teal">ESP32</span>
+            <span class="skill-tag skill-tag--filled-blue">Raspberry Pi</span>
+            <span class="skill-tag skill-tag--filled-lavender">Robotics</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Software Focus -->
+      <article class="widget widget--teal col-span-4 fade-in-up stagger-7 float-gentle">
+        <div class="widget__header">
+          <span class="widget__icon"><span class="material-symbols-rounded">code</span></span>
+          <span class="widget__title">Software Focus</span>
+        </div>
+        <div class="widget__content">
+          <p style="margin-bottom: var(--space-md); font-size: var(--text-sm);">
+            My work spans from Fusion 360 product design to high-fidelity UI skinning for Rainmeter and KLWP.
+          </p>
+          <div class="skill-tags">
+            <span class="skill-tag skill-tag--filled-green">Rainmeter</span>
+            <span class="skill-tag skill-tag--filled-sky">KLWP</span>
+            <span class="skill-tag skill-tag--filled-mauve">Lua</span>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Projects Section -->
+    <section class="bento-grid" style="margin-bottom: var(--space-xl);">
+
+      <h2 class="col-span-12 fade-in-up stagger-1" style="margin-bottom: 0;">
+        <span class="text-mauve">PROJECTS</span>
+      </h2>
+
+      <!-- Catppuccin for Rainmeter -->
+      <a href="https://github.com/modkavartini/catppuccin" target="_blank" rel="noopener"
+        class="widget widget--mauve col-span-4 fade-in-up stagger-2 project-widget" id="project-catppuccin">
+        <div class="project-card">
+          <div class="project-card__image-wrapper">
+            <img src="projects/catppuccin/1.png" alt="Catppuccin for Rainmeter" class="project-card__preview"
+              loading="lazy">
+          </div>
+          <div class="project-card__meta">
+            <span class="project-card__badge project-card__badge--mauve">
+              <span class="material-symbols-rounded" style="font-size: 12px;">star</span>
+              <span class="project-card__stars-count">—</span>
+            </span>
+            <span class="project-card__badge project-card__badge--surface project-card__language">—</span>
+            <span class="project-card__badge project-card__badge--surface project-card__version"
+              style="display: none;"></span>
+          </div>
+          <span class="project-card__tagline text-mauve">Soothing Pastel Suite For Rainmeter</span>
+          <h3 class="project-card__title text-mauve">CATPPUCCIN</h3>
+          <p class="project-card__description">
+            A comprehensive port of the Catppuccin flavor to the Rainmeter ecosystem.
+            High-modularization allows users to build a custom desktop that feels like a native OS.
+          </p>
+          <div class="project-card__tech">
+            <span class="project-card__tech-tag">Rainmeter</span>
+            <span class="project-card__tech-tag">PowerShell</span>
+            <span class="project-card__tech-tag">UI/UX</span>
+            <span class="project-card__tech-tag">Config</span>
+            <span class="project-card__tech-tag">System Monitoring</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Amarena -->
+      <a href="https://github.com/modkavartini/amarena" target="_blank" rel="noopener"
+        class="widget widget--pink col-span-4 fade-in-up stagger-3 project-widget" id="project-amarena">
+        <div class="project-card">
+          <div class="project-card__image-wrapper project-card__slideshow">
+            <img src="projects/amarena/1.png" alt="Amarena Screenshot 1"
+              class="project-card__preview project-card__slide active" loading="lazy">
+            <img src="projects/amarena/2.png" alt="Amarena Screenshot 2"
+              class="project-card__preview project-card__slide" loading="lazy">
+          </div>
+          <div class="project-card__meta">
+            <span class="project-card__badge project-card__badge--green">
+              <span class="material-symbols-rounded" style="font-size: 12px;">star</span>
+              <span class="project-card__stars-count">—</span>
+            </span>
+            <span class="project-card__badge project-card__badge--surface project-card__language">—</span>
+            <span class="project-card__badge project-card__badge--surface project-card__version"
+              style="display: none;"></span>
+          </div>
+          <span class="project-card__tagline text-pink">a Windows Port of a Beautiful Linux Theme.</span>
+          <h3 class="project-card__title text-green">AMARENA</h3>
+          <p class="project-card__description">
+            A suite of desktop enhancements for users who crave a minimal yet information-dense workspace.
+            Built on soft-minimalism and bento-box layouts.
+          </p>
+          <div class="project-card__tech">
+            <span class="project-card__tech-tag">Rainmeter</span>
+            <span class="project-card__tech-tag">PowerShell</span>
+            <span class="project-card__tech-tag">UI/UX</span>
+            <span class="project-card__tech-tag">Config</span>
+            <span class="project-card__tech-tag">System Monitoring</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- KLWP -->
+      <a href="https://github.com/modkavartini/klwp" target="_blank" rel="noopener"
+        class="widget widget--green col-span-4 fade-in-up stagger-4 project-widget" id="project-klwp">
+        <div class="project-card">
+          <div class="project-card__image-wrapper">
+            <img src="projects/klwp/1.jpeg" alt="KLWP Mobile Setup" class="project-card__preview" loading="lazy">
+          </div>
+          <div class="project-card__meta">
+            <span class="project-card__badge project-card__badge--red">
+              <span class="material-symbols-rounded" style="font-size: 12px;">star</span>
+              <span class="project-card__stars-count">—</span>
+            </span>
+            <span class="project-card__badge project-card__badge--surface project-card__language">—</span>
+            <span class="project-card__badge project-card__badge--surface project-card__version"
+              style="display: none;"></span>
+          </div>
+          <span class="project-card__tagline text-green">My Custom KLWP Themes For Android.</span>
+          <h3 class="project-card__title text-red">KLWP</h3>
+          <p class="project-card__description">
+            Taking my favourite aesthetic to the mobile screen. A fluid, widget-based Android home screen
+            experience.
+          </p>
+          <div class="project-card__tech">
+            <span class="project-card__tech-tag">KLWP</span>
+            <span class="project-card__tech-tag">Homescreen Setup</span>
+            <span class="project-card__tech-tag">Mobile UI/UX</span>
+          </div>
+        </div>
+      </a>
+
+    </section>
+
+    <!-- Contact Footer -->
+    <section id="socials" class="fade-in-up stagger-5" style="text-align: center;">
+      <h2 style="margin-bottom: var(--space-sm);">
+        LET'S BUILD <span class="text-mauve">SOMETHING BETTER.</span>
+      </h2>
+      <p style="max-width: 600px; margin: 0 auto var(--space-xl); color: var(--ctp-subtext0);">
+        Whether you want to talk product design, discuss about a big project,
+        <br>or just collab on a Figma board — my inbox is W I D E open.
+      </p>
+
+      <nav class="contact-dock">
+        <a href="https://www.linkedin.com/in/abhiram-chandrasenan-899a1830b" target="_blank" rel="noopener"
+          class="contact-dock__link contact-dock__link--primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+          </svg>
+          LinkedIn
+        </a>
+        <span class="contact-dock__divider"></span>
+        <a href="https://github.com/modkavartini" target="_blank" rel="noopener" class="contact-dock__link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+          </svg>
+          GitHub
+        </a>
+        <span class="contact-dock__divider"></span>
+        <a href="https://instagram.com/modkavartini" target="_blank" rel="noopener" class="contact-dock__link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+          </svg>
+          Instagram
+        </a>
+        <span class="contact-dock__divider"></span>
+        <a href="https://open.spotify.com/user/31ygteiffyydjczlt4yvinnffz54" target="_blank" rel="noopener"
+          class="contact-dock__link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+          </svg>
+          Spotify
+        </a>
+        <span class="contact-dock__divider"></span>
+        <a href="https://discord.com/users/944986926400811008" target="_blank" rel="noopener"
+          class="contact-dock__link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" />
+          </svg>
+          Discord
+        </a>
+        <span class="contact-dock__divider"></span>
+        <a href="mailto:abhiramchandrasen@gmail.com" class="contact-dock__link">
+          <span class="material-symbols-rounded" style="font-size: 18px;">mail</span>
+          Email
+        </a>
+      </nav>
+
+      <p style="margin-top: var(--space-xl); font-size: var(--text-sm); color: var(--ctp-overlay0);">
+        made with <strong>Abhiram's PROMPTS</strong> by <strong>Antigravity</strong>
+      </p>
+    </section>
+
+  </main>
+
+  <!-- Fixed Navigation Dock -->
+  <nav class="nav-dock" aria-label="Main navigation">
+    <a href="index.html" class="nav-dock__link active" title="Home">
+      <span class="material-symbols-rounded">home</span>
+    </a>
+    <a href="origin.html" class="nav-dock__link" title="Origin Story">
+      <span class="material-symbols-rounded">auto_awesome</span>
+    </a>
+    <span class="nav-dock__divider"></span>
+    <a href="#socials" class="nav-dock__link" title="Socials">
+      <span class="material-symbols-rounded">group</span>
+    </a>
+  </nav>
+
+  <!-- Scripts -->
+  <script src="scripts/lanyard.js"></script>
+  <script src="scripts/app.js"></script>
+  <script src="scripts/github-data.js"></script>
+</body>
+
+</html>

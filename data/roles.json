@@ -1,0 +1,26 @@
+{
+  "currentRoles": [
+    {
+      "title": "Chairperson",
+      "organization": "IEEE RAS SBC CEK",
+      "url": "https://ieee.ce-kgr.org/"
+    },
+    {
+      "title": "Design Lead",
+      "organization": "IEEE CS Kerala Chapter",
+      "url": "https://cs.ieeekerala.org/"
+    },
+    {
+      "title": "Lead Graphic Artist",
+      "organization": "IDK Why Studios",
+      "url": "https://idkwhystudios.netlify.app/"
+    }
+  ],
+  "pastRoles": [
+    {
+      "title": "Student Intern",
+      "organization": "IEEE EdSoc Kerala Chapter",
+      "url": "https://r10.ieee.org/kerala-es/"
+    }
+  ]
+}
