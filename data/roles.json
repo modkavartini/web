@@ -1,26 +1,41 @@
 {
   "currentRoles": [
     {
-      "title": "Chairperson",
-      "organization": "IEEE RAS SBC CEK",
-      "url": "https://ieee.ce-kgr.org/"
-    },
-    {
-      "title": "Design Lead",
+      "title": "Electronic Communications Coordinator",
       "organization": "IEEE CS Kerala Chapter",
       "url": "https://cs.ieeekerala.org/"
     },
     {
-      "title": "Lead Graphic Artist",
+      "title": "Designer & Technical Coordinator",
+      "organization": "STRIDE K-DISC",
+      "url": "https://stride.kerala.gov.in/"
+    },
+    {
+      "title": "Chairperson",
+      "organization": "IEEE RAS SBC CE Kidangoor",
+      "url": "https://ieee.ce-kgr.org/"
+    },
+    {
+      "title": "Marketing Manager",
       "organization": "IDK Why Studios",
       "url": "https://idkwhystudios.netlify.app/"
     }
   ],
   "pastRoles": [
     {
+      "title": "Design Lead",
+      "organization": "IEEE CS Kerala Chapter",
+      "url": "https://cs.ieeekerala.org/"
+    },
+    {
       "title": "Student Intern",
       "organization": "IEEE EdSoc Kerala Chapter",
       "url": "https://r10.ieee.org/kerala-es/"
+    },
+    {
+      "title": "Operations Manager",
+      "organization": "IEEE SB CE Kidangoor",
+      "url": "https://ieee.ce-kgr.org/"
     }
   ]
 }
