@@ -293,7 +293,7 @@ window.appUtils = {
 };
 
 /**
- * Footer credit: every 2s, glitch both words out to their honest alternate
+ * Footer credit: every 4s, glitch both words out to their honest alternate
  * (data-alt), hold a beat, then glitch back. Both spans swap in sync.
  */
 function initGlitchCredit() {
@@ -322,5 +322,5 @@ function initGlitchCredit() {
     setInterval(() => {
         glitchTo(true);
         setTimeout(() => glitchTo(false), 700);
-    }, 2000);
+    }, 4000);
 }
