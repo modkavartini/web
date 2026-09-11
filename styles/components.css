@@ -1243,6 +1243,50 @@ a.project-widget .project-card__tagline {
     color: var(--ctp-crust);
 }
 
+/* ---- Ferrofluid highlight (see scripts/dock-fluid.js) ---- */
+.contact-dock.has-fluid {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden; /* clip the fluid to the pill */
+}
+
+.contact-dock__fluid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    filter: url(#dock-goo);
+}
+
+.contact-dock__blob {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--ctp-mauve);
+    border-radius: var(--radius-pill);
+    transform-origin: center;
+    will-change: transform;
+    opacity: 0;
+}
+
+.contact-dock.has-fluid .contact-dock__link,
+.contact-dock.has-fluid .contact-dock__divider {
+    position: relative;
+    z-index: 1;
+}
+
+/* The fluid is the hover state now; keep the pill itself still */
+.contact-dock.has-fluid .contact-dock__link:hover {
+    background: transparent;
+    transform: none;
+    color: var(--color-text-primary);
+}
+
+.contact-dock.has-fluid .contact-dock__link.is-held,
+.contact-dock.has-fluid .contact-dock__link.is-held:hover {
+    color: var(--ctp-crust);
+}
+
 .contact-dock__divider {
     width: 1px;
     height: 24px;

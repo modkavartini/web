@@ -593,6 +593,14 @@
         <br>or just collab on a Figma board — my inbox is W I D E open.
       </p>
 
+      <!-- Goo filter: blurs the fluid blobs then re-sharpens alpha so they merge like liquid -->
+      <svg width="0" height="0" style="position: absolute;" aria-hidden="true" focusable="false">
+        <filter id="dock-goo" color-interpolation-filters="sRGB">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" result="goo" />
+          <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+        </filter>
+      </svg>
       <nav class="contact-dock">
         <a href="https://www.linkedin.com/in/abhiram-chandrasenan/" target="_blank" rel="noopener"
           class="contact-dock__link contact-dock__link--primary">
@@ -655,9 +663,6 @@
     <a href="index.html" class="nav-dock__link active" title="Home">
       <span class="material-symbols-rounded">home</span>
     </a>
-    <a href="origin.html" class="nav-dock__link" title="Origin Story">
-      <span class="material-symbols-rounded">auto_awesome</span>
-    </a>
     <span class="nav-dock__divider"></span>
     <a href="#socials" class="nav-dock__link" title="Socials">
       <span class="material-symbols-rounded">group</span>
@@ -667,6 +672,7 @@
   <!-- Scripts -->
   <script src="scripts/lanyard.js"></script>
   <script src="scripts/spotify.js"></script>
+  <script src="scripts/dock-fluid.js"></script>
   <script src="scripts/app.js"></script>
   <script src="scripts/github-data.js"></script>
 </body>
