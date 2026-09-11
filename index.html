@@ -70,6 +70,12 @@
       </div>
     </div>
   </div>
+  <script>
+    // Only the first visit of a session gets the preloader; later loads skip it entirely.
+    try {
+      if (sessionStorage.getItem('modka:visited')) document.getElementById('preloader').remove();
+    } catch (e) { /* storage blocked: fall through and show it */ }
+  </script>
 
   <style>
     .preloader {
@@ -165,14 +171,32 @@
   </style>
 
   <script>
-    // Preloader typing animation
+    // Preloader: types "vartini", then fades once BOTH the typing is done and the
+    // page has actually finished loading (fonts, styles, images). Safety-capped.
     document.addEventListener('DOMContentLoaded', () => {
-      const vartiniEl = document.querySelector('.preloader__vartini');
       const preloader = document.getElementById('preloader');
+      if (!preloader) return; // repeat visit, already removed
+
+      try { sessionStorage.setItem('modka:visited', '1'); } catch (e) { /* ignore */ }
+
+      const vartiniEl = preloader.querySelector('.preloader__vartini');
       const text = 'vartini';
       let index = 0;
+      let typed = false;
+      let loaded = document.readyState === 'complete';
+      let dismissed = false;
 
-      // Start typing after a short delay
+      const dismiss = () => {
+        if (dismissed) return;
+        dismissed = true;
+        preloader.classList.add('fade-out');
+        setTimeout(() => preloader.remove(), 500);
+      };
+      const maybeDismiss = () => { if (typed && loaded) setTimeout(dismiss, 300); };
+
+      window.addEventListener('load', () => { loaded = true; maybeDismiss(); }, { once: true });
+      setTimeout(dismiss, 6000); // never trap the visitor if something hangs
+
       setTimeout(() => {
         const typeInterval = setInterval(() => {
           if (index < text.length) {
@@ -181,18 +205,11 @@
           } else {
             clearInterval(typeInterval);
             vartiniEl.classList.add('done');
-
-            // Fade out preloader after typing completes
-            setTimeout(() => {
-              preloader.classList.add('fade-out');
-              // Remove preloader from DOM after animation
-              setTimeout(() => {
-                preloader.remove();
-              }, 500);
-            }, 400);
+            typed = true;
+            maybeDismiss();
           }
         }, 100);
-      }, 600);
+      }, 400);
     });
   </script>
 

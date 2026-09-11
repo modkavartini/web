@@ -3,6 +3,14 @@
  * Spotify Web API), so it shows whatever is playing on any device.
  */
 
+const CONTEXT_ICONS = {
+  playlist: 'queue_music',
+  album: 'album',
+  artist: 'person',
+  collection: 'favorite',
+  show: 'podcasts'
+};
+
 class NowPlaying {
   constructor() {
     this.content = document.getElementById('spotify-content');
@@ -44,32 +52,37 @@ class NowPlaying {
     }
   }
 
-  renderPlaying({ track, progress, fetchedAt }) {
+  renderPlaying({ track, progress, fetchedAt, context, session }) {
     const { title, artist, album, albumArt, url, duration } = track;
     const startedAt = fetchedAt - progress;
     const pct = Math.min((progress / duration) * 100, 100);
     const bars = '<div class="spotify-widget__bar"></div>'.repeat(7);
 
     this.content.innerHTML = `
-      <a class="spotify-widget" href="${url}" target="_blank" rel="noopener" title="Open in Spotify">
-        <img src="${albumArt}" alt="${escapeHtml(album)}" class="spotify-widget__art">
+      <div class="spotify-widget">
+        <a href="${url}" target="_blank" rel="noopener" title="Open in Spotify">
+          <img src="${albumArt}" alt="${escapeHtml(album)}" class="spotify-widget__art">
+        </a>
         <div class="spotify-widget__info">
-          <div class="spotify-widget__song">${escapeHtml(title)}</div>
+          <a href="${url}" target="_blank" rel="noopener" class="spotify-widget__song">${escapeHtml(title)}</a>
           <div class="spotify-widget__artist">${escapeHtml(artist)}</div>
           <div class="spotify-widget__progress">
             <div class="spotify-widget__progress-fill" style="width: ${pct}%"></div>
           </div>
           <div class="spotify-widget__visualizer">${bars}</div>
+          ${renderMeta(context, session)}
         </div>
-      </a>
+      </div>
     `;
     this.content.classList.remove('spotify-widget--idle');
 
-    // Advance the bar locally between polls; re-fetch as soon as the track ends
+    // Advance the bar + session clock locally between polls; re-fetch when the track ends
     const fill = this.content.querySelector('.spotify-widget__progress-fill');
+    const clock = this.content.querySelector('[data-session-start]');
     this.tickTimer = setInterval(() => {
       const elapsed = Date.now() - startedAt;
       fill.style.width = `${Math.min((elapsed / duration) * 100, 100)}%`;
+      if (clock) clock.textContent = formatDuration(Date.now() - Number(clock.dataset.sessionStart));
       if (elapsed >= duration) this.refresh();
     }, 1000);
   }
@@ -78,14 +91,16 @@ class NowPlaying {
     if (lastPlayed && lastPlayed.title) {
       const { title, artist, album, albumArt, url } = lastPlayed;
       this.content.innerHTML = `
-        <a class="spotify-widget spotify-widget--idle" href="${url}" target="_blank" rel="noopener" title="Open in Spotify">
-          <img src="${albumArt}" alt="${escapeHtml(album)}" class="spotify-widget__art">
+        <div class="spotify-widget spotify-widget--idle">
+          <a href="${url}" target="_blank" rel="noopener" title="Open in Spotify">
+            <img src="${albumArt}" alt="${escapeHtml(album)}" class="spotify-widget__art">
+          </a>
           <div class="spotify-widget__info">
             <div class="spotify-widget__label">Last played</div>
-            <div class="spotify-widget__song">${escapeHtml(title)}</div>
+            <a href="${url}" target="_blank" rel="noopener" class="spotify-widget__song">${escapeHtml(title)}</a>
             <div class="spotify-widget__artist">${escapeHtml(artist)}</div>
           </div>
-        </a>
+        </div>
       `;
     } else {
       this.content.innerHTML = `
@@ -100,6 +115,37 @@ class NowPlaying {
     }
     this.content.classList.add('spotify-widget--idle');
   }
+}
+
+/** "from <playlist>" + "listening for 1h 12m · 18 tracks" */
+function renderMeta(context, session) {
+  const parts = [];
+
+  if (context && context.name) {
+    const icon = CONTEXT_ICONS[context.type] || 'play_circle';
+    const inner = `<span class="material-symbols-rounded">${icon}</span><span class="spotify-widget__meta-text">${escapeHtml(context.name)}</span>`;
+    parts.push(context.url
+      ? `<a href="${context.url}" target="_blank" rel="noopener" class="spotify-widget__meta-item" title="Open in Spotify">${inner}</a>`
+      : `<span class="spotify-widget__meta-item">${inner}</span>`);
+  }
+
+  if (session && session.startedAt) {
+    const tracks = session.tracks > 1 ? ` · ${session.tracks} tracks` : '';
+    parts.push(`<span class="spotify-widget__meta-item" title="Listening since ${new Date(session.startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}">
+      <span class="material-symbols-rounded">schedule</span>
+      <span class="spotify-widget__meta-text"><span data-session-start="${session.startedAt}">${formatDuration(Date.now() - session.startedAt)}</span>${tracks}</span>
+    </span>`);
+  }
+
+  return parts.length ? `<div class="spotify-widget__meta">${parts.join('')}</div>` : '';
+}
+
+function formatDuration(ms) {
+  const mins = Math.max(0, Math.floor(ms / 60000));
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h > 0) return `${h}h ${String(m).padStart(2, '0')}m`;
+  return `${m}m`;
 }
 
 function escapeHtml(text) {

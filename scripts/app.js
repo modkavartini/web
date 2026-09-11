@@ -293,8 +293,8 @@ window.appUtils = {
 };
 
 /**
- * Footer credit: every 4s, glitch both words out to their honest alternate
- * (data-alt), hold a beat, then glitch back. Both spans swap in sync.
+ * Footer credit: alternates between the two versions every 4s, glitching
+ * both words in sync on each swap (data-alt holds the alternate text).
  */
 function initGlitchCredit() {
     const swaps = Array.from(document.querySelectorAll('.glitch-swap'));
@@ -319,8 +319,9 @@ function initGlitchCredit() {
         setTimeout(() => swaps.forEach(el => el.classList.remove('is-glitching')), 380);
     };
 
+    let showingAlt = false;
     setInterval(() => {
-        glitchTo(true);
-        setTimeout(() => glitchTo(false), 700);
+        showingAlt = !showingAlt;
+        glitchTo(showingAlt);
     }, 4000);
 }
