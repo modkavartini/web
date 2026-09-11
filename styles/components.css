@@ -304,13 +304,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
 }
 
 .avatar {
     width: 100%;
-    max-width: 180px;
     aspect-ratio: 1;
-    border-radius: var(--radius-xl);
+    display: block;
+    border-radius: var(--avatar-radius, var(--radius-xl));
     object-fit: cover;
     border: 3px solid var(--ctp-mauve);
     box-shadow:
@@ -323,8 +324,8 @@
 
 .avatar-ring {
     position: absolute;
-    inset: -8px;
-    border-radius: calc(var(--radius-xl) + 8px);
+    inset: -7px;
+    border-radius: calc(var(--avatar-radius, var(--radius-xl)) + 7px);
     border: 2px solid transparent;
     background:
         linear-gradient(var(--ctp-base), var(--ctp-base)) padding-box,
@@ -351,15 +352,33 @@
 /* ========================================
    QUOTE SPEECH BUBBLE (Cloud Style)
    ======================================== */
+/* Bio sits beside the square avatar card; centre its content in the taller row */
+.bio-widget {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.bio-widget .widget__content {
+    flex: 0 0 auto;
+}
+
+/* Concentric corners: avatar radius = card radius (22px) - card padding (14px) */
 .avatar-widget {
+    --avatar-pad: 14px;
+    --avatar-radius: calc(var(--radius-lg) - var(--avatar-pad));
     overflow: visible !important;
+    aspect-ratio: 1;
+    padding: var(--avatar-pad);
 }
 
 .quote-bubble {
     position: absolute;
-    top: -20px;
+    top: auto;
+    bottom: calc(100% - 10px);
     left: 50%;
     transform: translateX(-50%);
+    width: max-content; /* left: 50% would otherwise cap shrink-to-fit at half the card */
     background: var(--ctp-surface0);
     border: 1px solid var(--ctp-surface1);
     border-radius: var(--radius-lg);
@@ -418,12 +437,10 @@
     }
 }
 
-/* Hide bubble on very small screens to prevent overflow issues */
+/* Slightly smaller bubble on phones (position handled in Responsive Refinements) */
 @media (max-width: 480px) {
     .quote-bubble {
-        max-width: 140px;
-        top: -16px;
-        padding: var(--space-xs);
+        padding: var(--space-xs) var(--space-sm);
     }
 
     .quote-bubble__text {
@@ -954,10 +971,6 @@
     background: var(--ctp-red);
 }
 
-.project-card__badge--blue {
-    background: var(--ctp-blue);
-}
-
 .project-card__badge--surface {
     background: rgba(30, 30, 46, 0.9);
     color: var(--ctp-subtext1);
@@ -1010,18 +1023,12 @@ a.project-widget .project-card__tagline {
     background: var(--ctp-red);
 }
 
-/* Mobile: Square avatar widget */
+/* Mobile: keep the square avatar card from dominating the viewport */
 @media (max-width: 480px) {
-    .avatar {
-        max-width: 120px;
-    }
-
-    /* Make avatar container widget square */
-    .widget.col-span-3.float-gentle {
-        aspect-ratio: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .avatar-widget {
+        max-width: 280px;
+        margin-inline: auto;
+        width: 100%;
     }
 }
 
@@ -1277,4 +1284,71 @@ a.project-widget .project-card__tagline {
 .discord-widget__activity-name {
     color: var(--ctp-lavender);
     font-weight: 500;
+}
+
+/* ========================================
+   RESPONSIVE REFINEMENTS
+   ======================================== */
+
+/* Tablet: keep the hero two-up and pair the small cards */
+@media (max-width: 768px) {
+    .bento-grid .avatar-widget {
+        grid-column: span 2;
+    }
+
+    .bento-grid .bio-widget {
+        grid-column: span 4;
+    }
+
+    .bento-grid #discord-widget,
+    .bento-grid #spotify-widget,
+    .bento-grid .project-widget {
+        grid-column: span 3;
+    }
+
+    .quote-bubble {
+        max-width: 220px;
+    }
+}
+
+/* Phone: single column, tighter type and spacing */
+@media (max-width: 480px) {
+    .bento-grid .avatar-widget,
+    .bento-grid .bio-widget,
+    .bento-grid #discord-widget,
+    .bento-grid #spotify-widget,
+    .bento-grid .project-widget {
+        grid-column: span 1;
+    }
+
+    /* Room for the quote bubble hanging above the avatar */
+    main.container {
+        padding-top: 96px;
+        padding-left: var(--space-md);
+        padding-right: var(--space-md);
+    }
+
+    .quote-bubble {
+        max-width: min(260px, 88vw);
+    }
+
+    .widget {
+        padding: var(--space-md);
+    }
+
+    h2, .h2 {
+        font-size: var(--text-2xl);
+    }
+
+    /* Role rows: title on its own line, "@ org" beneath it */
+    .role-item {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        column-gap: var(--space-xs);
+        row-gap: 2px;
+    }
+
+    .role-item__title {
+        grid-column: 1 / -1;
+    }
 }

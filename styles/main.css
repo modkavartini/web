@@ -212,6 +212,11 @@ a:hover {
   padding: 0 var(--space-lg);
 }
 
+main.container {
+  padding-top: var(--space-xl);
+  padding-bottom: 120px; /* clearance for the fixed nav dock */
+}
+
 .flex { display: flex; }
 .flex-col { flex-direction: column; }
 .flex-wrap { flex-wrap: wrap; }

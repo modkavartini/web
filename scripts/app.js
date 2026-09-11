@@ -35,6 +35,9 @@ function initializeApp() {
 
     // Initialize random quote bubble
     initRandomQuote();
+
+    // Initialize glitching footer credit
+    initGlitchCredit();
 }
 
 /**
@@ -288,3 +291,36 @@ window.appUtils = {
     formatTime,
     debounce
 };
+
+/**
+ * Footer credit: every 2s, glitch both words out to their honest alternate
+ * (data-alt), hold a beat, then glitch back. Both spans swap in sync.
+ */
+function initGlitchCredit() {
+    const swaps = Array.from(document.querySelectorAll('.glitch-swap'));
+    if (!swaps.length) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    swaps.forEach(el => {
+        el.dataset.base = el.textContent.trim();
+        el.dataset.text = el.dataset.base;
+    });
+
+    const show = (alt) => swaps.forEach(el => {
+        const text = alt ? el.dataset.alt : el.dataset.base;
+        el.textContent = text;
+        el.dataset.text = text; // mirrored into the RGB-split pseudo-elements
+    });
+
+    const glitchTo = (alt) => {
+        if (prefersReducedMotion) { show(alt); return; }
+        swaps.forEach(el => el.classList.add('is-glitching'));
+        setTimeout(() => show(alt), 120);
+        setTimeout(() => swaps.forEach(el => el.classList.remove('is-glitching')), 380);
+    };
+
+    setInterval(() => {
+        glitchTo(true);
+        setTimeout(() => glitchTo(false), 700);
+    }, 2000);
+}

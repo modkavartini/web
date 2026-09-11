@@ -447,6 +447,63 @@
 /* ========================================
    REDUCED MOTION
    ======================================== */
+/* ========================================
+   GLITCH SWAP (footer credit)
+   ======================================== */
+.glitch-swap {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.glitch-swap.is-glitching {
+    animation: glitch-jitter 0.36s steps(2, end) 1;
+}
+
+.glitch-swap.is-glitching::before,
+.glitch-swap.is-glitching::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+}
+
+.glitch-swap.is-glitching::before {
+    color: var(--ctp-pink);
+    transform: translate(-2px, -1px);
+    animation: glitch-slice-top 0.36s steps(3, end) 1;
+}
+
+.glitch-swap.is-glitching::after {
+    color: var(--ctp-sapphire);
+    transform: translate(2px, 1px);
+    animation: glitch-slice-bottom 0.36s steps(3, end) 1;
+}
+
+@keyframes glitch-jitter {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(-1px, 1px) skewX(-4deg); }
+    50%  { transform: translate(1px, -1px) skewX(3deg); }
+    75%  { transform: translate(-1px, 0) skewX(-2deg); }
+    100% { transform: translate(0, 0); }
+}
+
+@keyframes glitch-slice-top {
+    0%   { clip-path: inset(0 0 60% 0); }
+    33%  { clip-path: inset(15% 0 40% 0); }
+    66%  { clip-path: inset(0 0 75% 0); }
+    100% { clip-path: inset(0 0 100% 0); }
+}
+
+@keyframes glitch-slice-bottom {
+    0%   { clip-path: inset(55% 0 0 0); }
+    33%  { clip-path: inset(70% 0 10% 0); }
+    66%  { clip-path: inset(40% 0 0 0); }
+    100% { clip-path: inset(100% 0 0 0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
 
     *,
