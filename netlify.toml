@@ -1,5 +1,14 @@
 # Netlify configuration for modkavartini portfolio
 
+[functions]
+  directory = "netlify/functions"
+
+# API routes -> Netlify Functions (must come before the SPA catch-all)
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
 # Redirects for clean URLs
 [[redirects]]
   from = "/*"

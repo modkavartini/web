@@ -1,5 +1,5 @@
 /**
- * Lanyard Integration for Discord & Spotify
+ * Lanyard Integration for Discord presence (Spotify lives in spotify.js)
  * Uses the Lanyard API (api.lanyard.rest) for real-time Discord presence
  */
 
@@ -18,9 +18,7 @@ class LanyardClient {
       discordStatusDot: document.getElementById('discord-status-dot'),
       discordStatusText: document.getElementById('discord-status-text'),
       discordActivity: document.getElementById('discord-activity'),
-      discordActivityText: document.getElementById('discord-activity-text'),
-      spotifyWidget: document.getElementById('spotify-widget'),
-      spotifyContent: document.getElementById('spotify-content')
+      discordActivityText: document.getElementById('discord-activity-text')
     };
   }
   
@@ -116,9 +114,6 @@ class LanyardClient {
     // Update Discord presence
     this.updateDiscordWidget(data);
     
-    // Update Spotify widget
-    this.updateSpotifyWidget(data.spotify, data.listening_to_spotify);
-    
     // Notify listeners
     this.listeners.forEach(listener => listener(data));
   }
@@ -197,83 +192,6 @@ class LanyardClient {
         elements.discordActivity.style.display = 'none';
       }
     }
-  }
-  
-  updateSpotifyWidget(spotify, isListening) {
-    const { elements } = this;
-    
-    if (!elements.spotifyContent) return;
-    
-    if (isListening && spotify) {
-      // Calculate progress
-      const now = Date.now();
-      const elapsed = now - spotify.timestamps.start;
-      const duration = spotify.timestamps.end - spotify.timestamps.start;
-      const progress = Math.min((elapsed / duration) * 100, 100);
-      
-      elements.spotifyContent.innerHTML = `
-        <div class="spotify-widget">
-          <img src="${spotify.album_art_url}" alt="${spotify.album}" class="spotify-widget__art">
-          <div class="spotify-widget__info">
-            <div class="spotify-widget__song">${spotify.song}</div>
-            <div class="spotify-widget__artist">${spotify.artist}</div>
-            <div class="spotify-widget__progress">
-              <div class="spotify-widget__progress-fill" style="width: ${progress}%"></div>
-            </div>
-            <div class="spotify-widget__visualizer">
-              <div class="spotify-widget__bar"></div>
-              <div class="spotify-widget__bar"></div>
-              <div class="spotify-widget__bar"></div>
-              <div class="spotify-widget__bar"></div>
-              <div class="spotify-widget__bar"></div>
-              <div class="spotify-widget__bar"></div>
-              <div class="spotify-widget__bar"></div>
-            </div>
-          </div>
-        </div>
-      `;
-      
-      elements.spotifyContent.classList.remove('spotify-widget--idle');
-      
-      // Start progress update interval
-      this.startSpotifyProgress(spotify);
-    } else {
-      elements.spotifyContent.innerHTML = `
-        <div class="spotify-widget spotify-widget--idle">
-          <div style="text-align: center; padding: var(--space-md); width: 100%;">
-            <p style="color: var(--ctp-overlay1); font-size: var(--text-sm); margin: 0;">
-              Not currently playing
-            </p>
-          </div>
-        </div>
-      `;
-      elements.spotifyContent.classList.add('spotify-widget--idle');
-    }
-  }
-  
-  startSpotifyProgress(spotify) {
-    // Clear any existing interval
-    if (this.spotifyProgressInterval) {
-      clearInterval(this.spotifyProgressInterval);
-    }
-    
-    // Update progress every second
-    this.spotifyProgressInterval = setInterval(() => {
-      const progressFill = document.querySelector('.spotify-widget__progress-fill');
-      if (progressFill && spotify) {
-        const now = Date.now();
-        const elapsed = now - spotify.timestamps.start;
-        const duration = spotify.timestamps.end - spotify.timestamps.start;
-        const progress = Math.min((elapsed / duration) * 100, 100);
-        
-        progressFill.style.width = `${progress}%`;
-        
-        // Stop if track ended
-        if (progress >= 100) {
-          clearInterval(this.spotifyProgressInterval);
-        }
-      }
-    }, 1000);
   }
   
   onUpdate(listener) {
