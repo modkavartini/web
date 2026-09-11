@@ -954,6 +954,10 @@
     background: var(--ctp-red);
 }
 
+.project-card__badge--blue {
+    background: var(--ctp-blue);
+}
+
 .project-card__badge--surface {
     background: rgba(30, 30, 46, 0.9);
     color: var(--ctp-subtext1);

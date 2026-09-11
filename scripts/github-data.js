@@ -23,6 +23,12 @@ class GitHubDataFetcher {
                 name: 'klwp',
                 elementId: 'project-klwp',
                 fallback: { stars: 20, downloads: 100, language: 'KLWP', version: null }
+            },
+            {
+                owner: 'modkavartini',
+                name: 'accord',
+                elementId: 'project-accord',
+                fallback: { stars: 1, downloads: 0, language: 'JavaScript', version: null }
             }
         ];
 
