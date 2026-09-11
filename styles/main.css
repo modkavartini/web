@@ -213,7 +213,8 @@ a:hover {
 }
 
 main.container {
-  padding-top: var(--space-xl);
+  /* headroom for the quote bubble that hangs above the avatar card */
+  padding-top: 88px;
   padding-bottom: 120px; /* clearance for the fixed nav dock */
 }
 

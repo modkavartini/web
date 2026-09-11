@@ -226,8 +226,10 @@
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: var(--space-xs);
-    padding: var(--space-sm) var(--space-md);
+    /* one 6px gap everywhere (divider included); 8px all round so the pill's
+       end caps stay concentric with the 44px icon circles */
+    gap: 6px;
+    padding: var(--space-sm);
     background: rgba(24, 24, 37, 0.85);
     backdrop-filter: blur(var(--blur-md));
     -webkit-backdrop-filter: blur(var(--blur-md));
@@ -269,14 +271,14 @@
     width: 1px;
     height: 24px;
     background: var(--ctp-surface1);
-    margin: 0 var(--space-xs);
+    margin: 0;
 }
 
 /* Mobile responsive nav-dock */
 @media (max-width: 480px) {
     .nav-dock {
-        gap: var(--space-xs);
-        padding: var(--space-xs) var(--space-sm);
+        gap: 4px;
+        padding: 6px;
         bottom: var(--space-md);
         max-width: calc(100vw - 32px);
     }
@@ -292,7 +294,6 @@
 
     .nav-dock__divider {
         height: 18px;
-        margin: 0 2px;
     }
 }
 
@@ -1321,9 +1322,9 @@ a.project-widget .project-card__tagline {
         grid-column: span 1;
     }
 
-    /* Room for the quote bubble hanging above the avatar */
+    /* Phone quotes wrap to 3-4 lines, so the bubble needs more room */
     main.container {
-        padding-top: 96px;
+        padding-top: 112px;
         padding-left: var(--space-md);
         padding-right: var(--space-md);
     }
