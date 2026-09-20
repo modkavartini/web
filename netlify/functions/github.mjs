@@ -8,6 +8,7 @@
  *   /api/github?releases=owner/name  → releases list
  *   /api/github?commit=owner/name/sha → one commit (cached for a day)
  *   /api/github?contributions        → last year's contribution calendar
+ *   /api/github?repos                → GH_USER's repos, most recently pushed first
  *
  * Optional: set GITHUB_TOKEN (a fine-grained token with no permissions is
  * enough) to raise the upstream limit to 5000 req/h.
@@ -39,6 +40,8 @@ export default async (req) => {
   } else if (releases) {
     if (!REPO_RE.test(releases)) return json({ error: 'bad repo' }, 400);
     upstream = `${API}/repos/${releases}/releases?per_page=5`;
+  } else if (url.searchParams.has('repos')) {
+    upstream = `${API}/users/${GH_USER}/repos?sort=pushed&per_page=12&type=owner`;
   } else if (url.searchParams.has('user')) {
     upstream = `${API}/users/${GH_USER}`;
   } else {

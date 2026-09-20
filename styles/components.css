@@ -1376,7 +1376,6 @@ a.project-widget .project-card__tagline {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
 }
 
 .github-activity {
@@ -1427,6 +1426,88 @@ a.project-widget .project-card__tagline {
 .github-summary__sep {
     margin: 0 var(--space-sm);
     color: var(--ctp-overlay0);
+}
+
+/* Recently pushed repos, under the graph */
+.github-repos {
+    margin-top: auto; /* sits at the foot of the card */
+    padding-top: var(--space-lg);
+}
+
+.github-repos .widget__header {
+    margin-bottom: var(--space-xs);
+}
+
+.github-repo {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--ctp-surface0);
+    color: inherit;
+    text-decoration: none;
+    min-width: 0;
+}
+
+.github-repo:last-child {
+    border-bottom: none;
+}
+
+.github-repo__main {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+    min-width: 0;
+}
+
+.github-repo__name {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+    transition: color var(--transition-fast);
+}
+
+.github-repo:hover .github-repo__name {
+    color: var(--ctp-blue);
+}
+
+.github-repo__desc {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+.github-repo__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.github-repo__meta .material-symbols-rounded {
+    font-size: 13px;
+    vertical-align: -2px;
+    margin-right: 2px;
+}
+
+.github-repo__lang::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lang, var(--ctp-overlay0));
+    margin-right: 5px;
+    vertical-align: 0;
 }
 
 .github-event__empty {
