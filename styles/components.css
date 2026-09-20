@@ -989,6 +989,11 @@ a.spotify-widget__meta-item:hover {
     opacity: 1;
 }
 
+/* No badge row (Accord): keep the same image → tagline gap the badges would give */
+.project-card__image-wrapper + .project-card__tagline {
+    margin-top: var(--space-md);
+}
+
 /* Project metadata badges */
 .project-card__meta {
     position: relative;
