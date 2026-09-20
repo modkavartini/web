@@ -1366,88 +1366,67 @@ a.project-widget .project-card__tagline {
     font-size: 14px;
 }
 
-.github-activity {
+/* Header stays aligned with the neighbouring cards; the graph floats mid-card */
+#github-widget {
     display: flex;
     flex-direction: column;
 }
 
-.github-event {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-sm) 0;
-    border-bottom: 1px solid var(--ctp-surface0);
-    color: inherit;
-    text-decoration: none;
-    min-width: 0;
-}
-
-.github-event:last-child {
-    border-bottom: none;
-}
-
-.github-event__icon {
-    width: 28px;
-    height: 28px;
+#github-widget .widget__content {
+    flex: 1;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
-    border-radius: var(--radius-sm);
-    background: var(--ctp-surface0);
-    color: var(--ctp-blue);
-    transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-.github-event__icon .material-symbols-rounded {
-    font-size: 16px;
-}
-
-.github-event:hover .github-event__icon {
-    background: var(--ctp-blue);
-    color: var(--ctp-crust);
-}
-
-.github-event__body {
+.github-activity {
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    min-width: 0;
+    justify-content: flex-end; /* newest weeks stay pinned right */
+    overflow: hidden;
 }
 
-.github-event__text {
+.github-graph {
+    display: block;
+    flex: none;
+}
+
+.github-graph__month {
+    fill: var(--ctp-overlay1);
+    font-family: var(--font-display);
+    font-size: 9px;
+}
+
+/* Contribution intensity: transparent-ish mauve steps on the card surface */
+.github-graph__day {
+    fill: var(--ctp-surface0);
+    transition: fill var(--transition-fast);
+}
+
+.github-graph__day[data-level="1"] { fill: rgba(203, 166, 247, 0.30); }
+.github-graph__day[data-level="2"] { fill: rgba(203, 166, 247, 0.55); }
+.github-graph__day[data-level="3"] { fill: rgba(203, 166, 247, 0.80); }
+.github-graph__day[data-level="4"] { fill: var(--ctp-mauve); }
+
+.github-graph__day:hover {
+    fill: var(--ctp-pink);
+}
+
+.github-summary {
+    margin-top: var(--space-md);
     font-size: var(--text-sm);
     color: var(--color-text-secondary);
-    line-height: 1.35;
 }
 
-.github-event__text strong {
+.github-summary strong {
     font-family: var(--font-display);
-    font-weight: 500;
+    font-weight: 600;
     color: var(--color-text-primary);
 }
 
-.github-event__branch {
-    font-family: var(--font-display);
-    font-size: var(--text-xs);
-    color: var(--ctp-lavender);
-    background: var(--ctp-surface0);
-    padding: 1px 6px;
-    border-radius: 6px;
-}
-
-.github-event__detail {
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-top: 2px;
-}
-
-.github-event__time {
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    font-variant-numeric: tabular-nums;
+.github-summary__sep {
+    margin: 0 var(--space-sm);
+    color: var(--ctp-overlay0);
 }
 
 .github-event__empty {

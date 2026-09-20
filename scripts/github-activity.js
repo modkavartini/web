@@ -1,171 +1,131 @@
 /**
- * GitHub Activity — recent public events for the profile, via /api/github
- * (a cached proxy, see netlify/functions/github.mjs). Results are also kept
- * in sessionStorage so navigating around doesn't re-fetch.
+ * GitHub contribution graph — the familiar grid of squares, drawn from
+ * /api/github?contributions (a cached proxy, see netlify/functions/github.mjs).
+ * Shows as many weeks as fit the card; resizes with it.
  */
 
-const GH_USER = 'modkavartini';
-const GH_EVENTS_URL = '/api/github';
-const GH_USER_URL = '/api/github?user';
-const GH_CACHE_KEY = 'modka:github-activity';
-const GH_CACHE_MS = 5 * 60 * 1000;
-const GH_MAX_ITEMS = 6;
+const GH_CACHE_KEY = 'modka:github-contributions';
+const GH_CACHE_MS = 30 * 60 * 1000;
+const CELL = 11;   // px
+const GAP = 3;     // px
+const STEP = CELL + GAP;
 
 class GitHubActivity {
   constructor() {
     this.content = document.getElementById('github-activity');
     this.stats = document.getElementById('github-stats');
+    this.summary = document.getElementById('github-summary');
     if (!this.content) return;
     this.init();
   }
 
   async init() {
     try {
-      const data = await this.load();
-      this.render(data);
+      const [calendar, user] = await Promise.all([this.loadCalendar(), this.loadUser()]);
+      this.calendar = calendar;
+      this.renderStats(user);
+      this.renderSummary(calendar);
+      this.renderGrid();
+      let t;
+      new ResizeObserver(() => { clearTimeout(t); t = setTimeout(() => this.renderGrid(), 100); }).observe(this.content);
     } catch (error) {
-      console.warn('GitHub activity unavailable:', error);
-      this.renderEmpty('Activity is taking a nap');
+      console.warn('GitHub contributions unavailable:', error);
+      this.content.innerHTML = '<p class="github-event__empty">Contributions are taking a nap</p>';
     }
   }
 
-  async load() {
+  async loadCalendar() {
     try {
       const cached = JSON.parse(sessionStorage.getItem(GH_CACHE_KEY));
-      if (cached && Date.now() - cached.at < GH_CACHE_MS) return cached;
+      if (cached && Date.now() - cached.at < GH_CACHE_MS) return cached.data;
     } catch (e) { /* ignore */ }
-
-    const [eventsRes, userRes] = await Promise.all([fetch(GH_EVENTS_URL), fetch(GH_USER_URL)]);
-    if (!eventsRes.ok) throw new Error(`events ${eventsRes.status}`);
-    const events = await eventsRes.json();
-    const user = userRes.ok ? await userRes.json() : null;
-
-    const items = events
-      .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
-      .map(describeEvent)
-      .filter(Boolean)
-      .slice(0, GH_MAX_ITEMS);
-
-    // The public feed omits commit messages, so look up the head commit of each push
-    await Promise.all(items.filter(i => i.commit).map(async (item) => {
-      try {
-        const res = await fetch(`/api/github?commit=${item.commit}`);
-        if (res.ok) item.detail = firstLine((await res.json()).commit?.message);
-      } catch (e) { /* leave it without a detail line */ }
-    }));
-
-    const data = {
-      at: Date.now(),
-      items,
-      user: user ? { repos: user.public_repos, followers: user.followers } : null
-    };
-    try { sessionStorage.setItem(GH_CACHE_KEY, JSON.stringify(data)); } catch (e) { /* ignore */ }
+    const res = await fetch('/api/github?contributions');
+    if (!res.ok) throw new Error(`contributions ${res.status}`);
+    const data = await res.json();
+    try { sessionStorage.setItem(GH_CACHE_KEY, JSON.stringify({ at: Date.now(), data })); } catch (e) { /* ignore */ }
     return data;
   }
 
-  render({ items, user }) {
-    if (this.stats && user) {
-      this.stats.innerHTML = `
-        <span class="github-stats__item"><span class="material-symbols-rounded">deployed_code</span>${user.repos} repos</span>
-        <span class="github-stats__item"><span class="material-symbols-rounded">group</span>${user.followers} followers</span>
-      `;
-    }
-
-    if (!items.length) { this.renderEmpty('Quiet on GitHub lately'); return; }
-
-    this.content.innerHTML = items.map(item => `
-      <a href="${item.url}" target="_blank" rel="noopener" class="github-event">
-        <span class="github-event__icon"><span class="material-symbols-rounded">${item.icon}</span></span>
-        <span class="github-event__body">
-          <span class="github-event__text">${item.text}</span>
-          ${item.detail ? `<span class="github-event__detail">${escapeHtml(item.detail)}</span>` : ''}
-        </span>
-        <time class="github-event__time" datetime="${item.at}" title="${new Date(item.at).toLocaleString()}">${timeAgo(item.at)}</time>
-      </a>
-    `).join('');
+  async loadUser() {
+    try {
+      const res = await fetch('/api/github?user');
+      return res.ok ? await res.json() : null;
+    } catch (e) { return null; }
   }
 
-  renderEmpty(message) {
-    this.content.innerHTML = `<p class="github-event__empty">${message}</p>`;
+  renderStats(user) {
+    if (!this.stats || !user) return;
+    this.stats.innerHTML = `
+      <span class="github-stats__item"><span class="material-symbols-rounded">deployed_code</span>${user.public_repos} repos</span>
+      <span class="github-stats__item"><span class="material-symbols-rounded">group</span>${user.followers} followers</span>
+    `;
   }
-}
 
-/** Turn a raw event into { icon, text (html), detail, url, at } — or null to skip it. */
-function describeEvent(event) {
-  const repo = event.repo.name;
-  const repoUrl = `https://github.com/${repo}`;
-  const shortRepo = repo.startsWith(`${GH_USER}/`) ? repo.slice(GH_USER.length + 1) : repo;
-  const name = `<strong>${escapeHtml(shortRepo)}</strong>`;
-  const p = event.payload || {};
-  const base = { at: event.created_at, url: repoUrl, detail: null };
+  renderSummary({ total, days }) {
+    if (!this.summary) return;
+    // current streak: consecutive active days ending today (or yesterday, if today is still empty)
+    let streak = 0;
+    for (let i = days.length - 1; i >= 0; i--) {
+      if (days[i].count > 0) streak++;
+      else if (i === days.length - 1) continue;
+      else break;
+    }
+    this.summary.innerHTML = `
+      <strong>${total.toLocaleString()}</strong> contribution${total === 1 ? '' : 's'} in the last year
+      ${streak > 1 ? `<span class="github-summary__sep">·</span><strong>${streak}</strong> day streak` : ''}
+    `;
+  }
 
-  switch (event.type) {
-    case 'PushEvent': {
-      const branch = String(p.ref || '').replace('refs/heads/', '');
-      return {
-        ...base,
-        icon: 'commit',
-        text: `Pushed to ${name}${branch && branch !== 'main' && branch !== 'master' ? ` <span class="github-event__branch">${escapeHtml(branch)}</span>` : ''}`,
-        commit: p.head ? `${repo}/${p.head}` : null,
-        url: p.head ? `${repoUrl}/commit/${p.head}` : `${repoUrl}/commits`
-      };
+  renderGrid() {
+    const { days } = this.calendar;
+    const width = this.content.clientWidth;
+    if (!width || width === this.lastWidth) return; // the observer also fires on our own height changes
+    this.lastWidth = width;
+
+    // One column per week (Sun–Sat), newest on the right; keep as many as fit
+    const weeks = [];
+    let week = [];
+    for (const d of days) {
+      const dow = new Date(d.date + 'T00:00:00Z').getUTCDay();
+      if (dow === 0 && week.length) { weeks.push(week); week = []; }
+      if (!week.length) week = new Array(dow).fill(null); // pad the first week
+      week.push(d);
     }
-    case 'CreateEvent':
-      if (p.ref_type === 'repository') return { ...base, icon: 'add_box', text: `Created ${name}` };
-      if (p.ref_type === 'branch') return { ...base, icon: 'fork_right', text: `Created branch <strong>${escapeHtml(p.ref)}</strong> in ${name}`, url: `${repoUrl}/tree/${p.ref}` };
-      if (p.ref_type === 'tag') return { ...base, icon: 'sell', text: `Tagged <strong>${escapeHtml(p.ref)}</strong> in ${name}`, url: `${repoUrl}/releases/tag/${p.ref}` };
-      return null;
-    case 'PullRequestEvent': {
-      const pr = p.pull_request || {};
-      const merged = p.action === 'merged' || (p.action === 'closed' && pr.merged);
-      const verb = merged ? 'Merged' : p.action === 'closed' ? 'Closed' : (p.action === 'opened' || p.action === 'reopened') ? 'Opened' : null;
-      if (!verb) return null;
-      return { ...base, icon: merged ? 'merge' : 'call_merge', text: `${verb} PR <strong>#${pr.number}</strong> in ${name}`, detail: pr.title, url: pr.html_url || `${repoUrl}/pulls` };
-    }
-    case 'IssuesEvent': {
-      const issue = p.issue || {};
-      if (!['opened', 'closed', 'reopened'].includes(p.action)) return null;
-      const verb = p.action[0].toUpperCase() + p.action.slice(1);
-      return { ...base, icon: 'adjust', text: `${verb} issue <strong>#${issue.number}</strong> in ${name}`, detail: issue.title, url: issue.html_url || `${repoUrl}/issues` };
-    }
-    case 'IssueCommentEvent': {
-      const issue = p.issue || {};
-      if (p.action !== 'created') return null;
-      return { ...base, icon: 'chat_bubble', text: `Commented on <strong>#${issue.number}</strong> in ${name}`, detail: issue.title, url: p.comment?.html_url || issue.html_url || repoUrl };
-    }
-    case 'ReleaseEvent':
-      if (p.action !== 'published') return null;
-      return { ...base, icon: 'rocket_launch', text: `Released <strong>${escapeHtml(p.release?.tag_name ?? '')}</strong> of ${name}`, detail: p.release?.name, url: p.release?.html_url || `${repoUrl}/releases` };
-    case 'WatchEvent':
-      return { ...base, icon: 'star', text: `Starred ${name}` };
-    case 'ForkEvent':
-      return { ...base, icon: 'fork_left', text: `Forked ${name}`, url: p.forkee?.html_url || repoUrl };
-    case 'PublicEvent':
-      return { ...base, icon: 'public', text: `Open-sourced ${name}` };
-    default:
-      return null;
+    if (week.length) weeks.push(week);
+
+    const fit = Math.min(weeks.length, Math.max(4, Math.floor((width + GAP) / STEP)));
+    const shown = weeks.slice(-fit);
+    // grow the cells a touch so the grid fills the card edge to edge
+    const step = Math.floor((width + GAP) / fit);
+    const cell = step - GAP;
+    const w = shown.length * step - GAP;
+    const monthRow = 14;
+    const h = monthRow + 7 * step - GAP;
+
+    // Month label above the first column of each month
+    let lastMonth = -1;
+    const months = shown.map((wk, x) => {
+      const first = wk.find(Boolean);
+      if (!first) return '';
+      const date = new Date(first.date + 'T00:00:00Z');
+      if (date.getUTCMonth() === lastMonth) return '';
+      lastMonth = date.getUTCMonth();
+      if (x === 0 && wk.length < 7) return ''; // partial first column: skip, avoids a cramped label
+      if (x >= shown.length - 2) return '';    // no room to the right
+      return `<text class="github-graph__month" x="${x * step}" y="9">${date.toLocaleDateString(undefined, { month: 'short', timeZone: 'UTC' })}</text>`;
+    }).join('');
+
+    const cells = shown.map((wk, x) => wk.map((d, y) => {
+      if (!d) return '';
+      const label = `${d.count === 0 ? 'No' : d.count} contribution${d.count === 1 ? '' : 's'} on ${longDay(d.date)}`;
+      return `<rect class="github-graph__day" data-level="${d.level}" x="${x * step}" y="${monthRow + y * step}" width="${cell}" height="${cell}" rx="2"><title>${label}</title></rect>`;
+    }).join('')).join('');
+
+    this.content.innerHTML = `<svg class="github-graph" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="GitHub contribution graph">${months}${cells}</svg>`;
   }
 }
 
-function firstLine(message) {
-  const line = String(message ?? '').split('\n')[0].trim();
-  return line.length > 72 ? `${line.slice(0, 71)}…` : line;
-}
-
-function timeAgo(iso) {
-  const s = Math.max(0, (Date.now() - Date.parse(iso)) / 1000);
-  if (s < 60) return 'now';
-  const m = s / 60; if (m < 60) return `${Math.floor(m)}m`;
-  const h = m / 60; if (h < 24) return `${Math.floor(h)}h`;
-  const d = h / 24; if (d < 7) return `${Math.floor(d)}d`;
-  const w = d / 7; if (w < 5) return `${Math.floor(w)}w`;
-  return `${Math.floor(d / 30)}mo`;
-}
-
-function escapeHtml(text) {
-  const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
-  return String(text ?? '').replace(/[&<>"']/g, c => map[c]);
-}
+const longDay = (iso) => new Date(iso + 'T00:00:00Z').toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 
 document.addEventListener('DOMContentLoaded', () => {
   window.githubActivity = new GitHubActivity();
