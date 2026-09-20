@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "netlify-cli": "^23.13.0"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^11.1.0"
   }
 }

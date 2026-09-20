@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Analytics · modka</title>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <style>
+    body { min-height: 100vh; }
+
+    .admin { max-width: 1040px; margin: 0 auto; padding: var(--space-xl) var(--space-md) var(--space-3xl); }
+
+    .admin__top { display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap; margin-bottom: var(--space-lg); }
+    .admin__brand { display: flex; align-items: center; gap: var(--space-sm); color: var(--color-text-primary); text-decoration: none; font-family: var(--font-display); font-weight: 600; }
+    .admin__brand img { width: 28px; height: 28px; border-radius: 8px; }
+    .admin__title { font-size: var(--text-sm); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-display); }
+    .admin__spacer { flex: 1; }
+
+    .seg { display: inline-flex; background: var(--ctp-mantle); border-radius: var(--radius-pill); padding: 4px; gap: 2px; }
+    .seg button { border: 0; background: transparent; color: var(--color-text-muted); font: inherit; font-size: var(--text-sm); padding: 6px 14px; border-radius: var(--radius-pill); cursor: pointer; transition: background var(--transition-fast), color var(--transition-fast); }
+    .seg button:hover { color: var(--color-text-primary); }
+    .seg button.is-active { background: var(--ctp-mauve); color: var(--ctp-crust); font-weight: 600; }
+
+    .icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--ctp-mantle); color: var(--color-text-muted); cursor: pointer; transition: color var(--transition-fast), background var(--transition-fast); }
+    .icon-btn:hover { color: var(--color-text-primary); background: var(--ctp-surface0); }
+    .icon-btn .material-symbols-rounded { font-size: 20px; }
+    .icon-btn.is-spinning .material-symbols-rounded { animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--grid-gap); }
+    .card { background: var(--ctp-mantle); border-radius: var(--radius-lg); padding: var(--space-lg); min-width: 0; }
+    .span-3 { grid-column: span 3; } .span-4 { grid-column: span 4; } .span-6 { grid-column: span 6; } .span-12 { grid-column: span 12; }
+
+    .stat__label { font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted); display: flex; align-items: center; gap: 6px; }
+    .stat__label .material-symbols-rounded { font-size: 16px; }
+    .stat__value { font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600; color: var(--color-text-primary); margin-top: var(--space-sm); font-variant-numeric: tabular-nums; line-height: 1; }
+    .stat__hint { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-sm); }
+    .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ctp-green); box-shadow: 0 0 0 0 rgba(166, 227, 161, 0.6); animation: pulse 2s infinite; }
+    .live-dot.is-idle { background: var(--ctp-overlay0); animation: none; box-shadow: none; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(166, 227, 161, 0.55); } 70% { box-shadow: 0 0 0 8px rgba(166, 227, 161, 0); } 100% { box-shadow: 0 0 0 0 rgba(166, 227, 161, 0); } }
+
+    .card__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-sm); margin-bottom: var(--space-md); }
+    .card__title { font-family: var(--font-display); font-size: var(--text-sm); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted); }
+    .card__sub { font-size: var(--text-xs); color: var(--color-text-muted); }
+
+    /* Daily views chart: thin bars, rounded tops, recessive grid, hover tooltip */
+    .chart { position: relative; height: 200px; }
+    .chart svg { width: 100%; height: 100%; display: block; overflow: visible; }
+    .chart .grid-line { stroke: var(--ctp-surface0); stroke-width: 1; }
+    .chart .bar { fill: var(--ctp-mauve); transition: fill var(--transition-fast); }
+    .chart .bar-hit { fill: transparent; cursor: default; }
+    .chart .bar-hit:hover + .bar, .chart .bar.is-hot { fill: var(--ctp-pink); }
+    .chart .axis-label { fill: var(--ctp-overlay1); font-size: 10px; font-family: var(--font-display); }
+    .tip { position: absolute; z-index: 2; pointer-events: none; background: var(--ctp-surface0); color: var(--color-text-primary); border-radius: var(--radius-sm); padding: 6px 10px; font-size: var(--text-xs); white-space: nowrap; transform: translate(-50%, calc(-100% - 10px)); opacity: 0; transition: opacity var(--transition-fast); box-shadow: var(--shadow-md); }
+    .tip.is-visible { opacity: 1; }
+    .tip strong { font-family: var(--font-display); color: var(--ctp-mauve); }
+
+    .rank { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .rank li { position: relative; display: grid; grid-template-columns: 1fr auto; gap: var(--space-sm); align-items: center; padding: 6px 10px; border-radius: var(--radius-sm); overflow: hidden; font-size: var(--text-sm); }
+    .rank li::before { content: ''; position: absolute; inset: 0; width: var(--w, 0%); background: rgba(203, 166, 247, 0.12); border-radius: var(--radius-sm); }
+    .rank__name { position: relative; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 8px; }
+    .rank__name .material-symbols-rounded { font-size: 16px; color: var(--color-text-muted); }
+    .rank__count { position: relative; font-family: var(--font-display); color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+    .rank__pct { color: var(--color-text-muted); font-size: var(--text-xs); margin-left: 6px; }
+    .empty { color: var(--ctp-overlay1); font-size: var(--text-sm); text-align: center; padding: var(--space-md) 0; }
+
+    .hours { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; align-items: end; height: 64px; }
+    .hours span { display: block; background: var(--ctp-mauve); border-radius: 3px 3px 0 0; min-height: 2px; opacity: 0.85; }
+    .hours-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--ctp-overlay1); font-family: var(--font-display); margin-top: 6px; }
+
+    .foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); flex-wrap: wrap; margin-top: var(--space-lg); font-size: var(--text-xs); color: var(--color-text-muted); }
+    .toggle { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+    .toggle input { accent-color: var(--ctp-mauve); }
+
+    /* Sign-in */
+    .gate { max-width: 400px; margin: 18vh auto 0; }
+    .gate h1 { font-family: var(--font-display); font-size: var(--text-xl); margin-bottom: var(--space-xs); }
+    .gate p { color: var(--color-text-secondary); font-size: var(--text-sm); margin-bottom: var(--space-md); }
+    .gate form { display: flex; gap: var(--space-sm); }
+    .gate input { flex: 1; min-width: 0; font: inherit; padding: 10px 14px; border-radius: var(--radius-pill); border: 1px solid var(--ctp-surface1); background: var(--ctp-base); color: var(--color-text-primary); outline: none; }
+    .gate input:focus { border-color: var(--ctp-mauve); }
+    .gate button { font: inherit; font-weight: 600; padding: 10px 18px; border-radius: var(--radius-pill); border: 0; background: var(--ctp-mauve); color: var(--ctp-crust); cursor: pointer; }
+    .gate .err { color: var(--ctp-red); font-size: var(--text-sm); margin-top: var(--space-sm); min-height: 1.2em; }
+    .gate code { font-family: var(--font-display); font-size: var(--text-xs); background: var(--ctp-base); padding: 2px 6px; border-radius: 6px; }
+
+    @media (max-width: 860px) { .span-3 { grid-column: span 6; } .span-4 { grid-column: span 12; } .span-6 { grid-column: span 12; } }
+    @media (max-width: 480px) { .span-3 { grid-column: span 12; } .admin { padding-inline: var(--space-md); } .stat__value { font-size: var(--text-2xl); } }
+  </style>
+</head>
+
+<body>
+  <main class="admin">
+    <section class="card gate" id="gate" hidden>
+      <h1>modka · analytics</h1>
+      <p id="gate-msg">Enter the analytics key to open the dashboard.</p>
+      <form id="gate-form">
+        <input type="password" id="gate-key" placeholder="ANALYTICS_KEY" autocomplete="current-password" required>
+        <button type="submit">Open</button>
+      </form>
+      <div class="err" id="gate-err"></div>
+    </section>
+
+    <section id="dash" hidden>
+      <div class="admin__top">
+        <a href="/" class="admin__brand"><img src="/logo.png" alt="">modka</a>
+        <span class="admin__title">Analytics</span>
+        <span class="admin__spacer"></span>
+        <div class="seg" id="range">
+          <button data-days="7">7d</button>
+          <button data-days="30" class="is-active">30d</button>
+          <button data-days="90">90d</button>
+        </div>
+        <button class="icon-btn" id="refresh" title="Refresh"><span class="material-symbols-rounded">refresh</span></button>
+        <button class="icon-btn" id="logout" title="Sign out"><span class="material-symbols-rounded">logout</span></button>
+      </div>
+
+      <div class="grid">
+        <article class="card span-3">
+          <div class="stat__label"><span class="material-symbols-rounded">visibility</span>Views</div>
+          <div class="stat__value" id="s-views">–</div>
+          <div class="stat__hint" id="s-views-hint"></div>
+        </article>
+        <article class="card span-3">
+          <div class="stat__label"><span class="material-symbols-rounded">person</span>Visitors</div>
+          <div class="stat__value" id="s-visitors">–</div>
+          <div class="stat__hint">unique per day, summed</div>
+        </article>
+        <article class="card span-3">
+          <div class="stat__label"><span class="live-dot" id="live-dot"></span>Live now</div>
+          <div class="stat__value" id="s-live">–</div>
+          <div class="stat__hint">visitors in the last 5 min</div>
+        </article>
+        <article class="card span-3">
+          <div class="stat__label"><span class="material-symbols-rounded">today</span>Today</div>
+          <div class="stat__value" id="s-today">–</div>
+          <div class="stat__hint" id="s-today-hint"></div>
+        </article>
+
+        <article class="card span-12">
+          <div class="card__head"><span class="card__title">Daily views</span><span class="card__sub" id="chart-sub"></span></div>
+          <div class="chart" id="chart"><div class="tip" id="tip"></div></div>
+        </article>
+
+        <article class="card span-4">
+          <div class="card__head"><span class="card__title">Pages</span></div>
+          <ul class="rank" id="r-pages"></ul>
+        </article>
+        <article class="card span-4">
+          <div class="card__head"><span class="card__title">Referrers</span></div>
+          <ul class="rank" id="r-refs"></ul>
+        </article>
+        <article class="card span-4">
+          <div class="card__head"><span class="card__title">Countries</span></div>
+          <ul class="rank" id="r-countries"></ul>
+        </article>
+
+        <article class="card span-6">
+          <div class="card__head"><span class="card__title">Devices</span></div>
+          <ul class="rank" id="r-devices"></ul>
+        </article>
+        <article class="card span-6">
+          <div class="card__head"><span class="card__title">Time of day</span><span class="card__sub">UTC</span></div>
+          <div class="hours" id="hours"></div>
+          <div class="hours-labels"><span>00</span><span>06</span><span>12</span><span>18</span><span>23</span></div>
+        </article>
+      </div>
+
+      <div class="foot">
+        <label class="toggle"><input type="checkbox" id="no-track"> Don't count my visits from this browser</label>
+        <span id="generated"></span>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const KEY = 'modka:analytics-key';
+    let days = 30;
+    let timer = null;
+    let lastSeries = null;
+
+    const gate = $('gate'), dash = $('dash');
+
+    function getKey() { try { return sessionStorage.getItem(KEY); } catch (e) { return null; } }
+    function setKey(v) { try { v ? sessionStorage.setItem(KEY, v) : sessionStorage.removeItem(KEY); } catch (e) { /* ignore */ } }
+
+    $('gate-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setKey($('gate-key').value.trim());
+      $('gate-key').value = '';
+      $('gate-err').textContent = '';
+      await load();
+    });
+
+    $('logout').addEventListener('click', () => { setKey(null); clearInterval(timer); showGate(); });
+    $('refresh').addEventListener('click', () => load());
+    $('range').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      days = Number(b.dataset.days);
+      $('range').querySelectorAll('button').forEach(x => x.classList.toggle('is-active', x === b));
+      load();
+    });
+
+    try { $('no-track').checked = !!localStorage.getItem('modka:no-track'); } catch (e) { /* ignore */ }
+    $('no-track').addEventListener('change', (e) => {
+      try { e.target.checked ? localStorage.setItem('modka:no-track', '1') : localStorage.removeItem('modka:no-track'); } catch (err) { /* ignore */ }
+    });
+
+    function showGate(msg, err) {
+      dash.hidden = true; gate.hidden = false;
+      if (msg) $('gate-msg').innerHTML = msg;
+      $('gate-err').textContent = err || '';
+      $('gate-key').focus();
+    }
+
+    async function load() {
+      const key = getKey();
+      if (!key) return showGate();
+      $('refresh').classList.add('is-spinning');
+      try {
+        const res = await fetch(`/api/stats?days=${days}`, { headers: { Authorization: `Bearer ${key}` }, cache: 'no-store' });
+        const data = await res.json();
+        if (res.status === 401) { setKey(null); return showGate(null, 'Wrong key.'); }
+        if (res.status === 503) { setKey(null); return showGate(`Not configured yet. Set the key once with <code>npx netlify env:set ANALYTICS_KEY &lt;secret&gt;</code>, then redeploy.`); }
+        if (!res.ok) throw new Error(data.error || res.status);
+        gate.hidden = true; dash.hidden = false;
+        render(data);
+        clearInterval(timer);
+        timer = setInterval(() => { if (!document.hidden) load(); }, 60000);
+      } catch (err) {
+        showGate(null, `Couldn't load stats: ${err.message}`);
+      } finally {
+        $('refresh').classList.remove('is-spinning');
+      }
+    }
+
+    const fmt = (n) => n.toLocaleString();
+    const pct = (n, total) => total ? `${Math.round((n / total) * 100)}%` : '';
+
+    function render(d) {
+      const t = d.totals;
+      const today = d.series[d.series.length - 1] || { views: 0, visitors: 0 };
+      $('s-views').textContent = fmt(t.views);
+      $('s-views-hint').textContent = `${(t.views / d.range.days).toFixed(1)} / day over ${d.range.days} days`;
+      $('s-visitors').textContent = fmt(t.visitors);
+      $('s-live').textContent = fmt(d.live);
+      $('live-dot').classList.toggle('is-idle', d.live === 0);
+      $('s-today').textContent = fmt(today.views);
+      $('s-today-hint').textContent = `${fmt(today.visitors)} visitor${today.visitors === 1 ? '' : 's'} today`;
+      $('chart-sub').textContent = `${d.range.from} → ${d.range.to}`;
+
+      renderChart(d.series);
+      renderRank('r-pages', t.pages, t.views, (n) => n);
+      renderRank('r-refs', t.refs, t.views, (n) => n === 'direct' ? 'Direct / none' : n, (n) => n === 'direct' ? 'link' : 'travel_explore');
+      renderRank('r-countries', t.countries, t.views, (c) => c === '??' ? 'Unknown' : `${flag(c)} ${regionName(c)}`);
+      renderRank('r-devices', t.devices, t.views, (n) => n[0].toUpperCase() + n.slice(1), (n) => n === 'mobile' ? 'smartphone' : 'computer');
+      renderHours(t.hours);
+      $('generated').textContent = `Updated ${new Date(d.generatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · refreshes every minute`;
+    }
+
+    function renderRank(id, items, total, label, icon) {
+      const el = $(id);
+      if (!items.length) { el.innerHTML = '<li class="empty">Nothing yet</li>'; return; }
+      const max = items[0].count;
+      el.innerHTML = items.map(({ name, count }) => `
+        <li style="--w:${(count / max) * 100}%">
+          <span class="rank__name">${icon ? `<span class="material-symbols-rounded">${icon(name)}</span>` : ''}${esc(label(name))}</span>
+          <span class="rank__count">${fmt(count)}<span class="rank__pct">${pct(count, total)}</span></span>
+        </li>`).join('');
+    }
+
+    function renderChart(series) {
+      const el = $('chart'), tip = $('tip');
+      const W = el.clientWidth || 1000, H = el.clientHeight || 200, padB = 18, padT = 8;
+      lastSeries = series;
+      const max = Math.max(1, ...series.map(s => s.views));
+      const n = series.length;
+      const slot = W / n;
+      const barW = Math.max(3, Math.min(28, slot * 0.6));
+      const ticks = niceTicks(max);
+      const y = (v) => padT + (H - padT - padB) * (1 - v / ticks.max);
+
+      const grid = ticks.values.map(v => `<line class="grid-line" x1="0" x2="${W}" y1="${y(v)}" y2="${y(v)}"></line>
+        <text class="axis-label" x="0" y="${y(v) - 3}">${v}</text>`).join('');
+
+      const bars = series.map((s, i) => {
+        const x = i * slot + (slot - barW) / 2;
+        const h = Math.max(s.views ? 3 : 0, y(0) - y(s.views));
+        const r = Math.min(4, barW / 2);
+        return `<rect class="bar-hit" data-i="${i}" x="${i * slot}" y="${padT}" width="${slot}" height="${H - padT - padB}"></rect>
+          <path class="bar" data-i="${i}" d="${roundedTop(x, y(0) - h, barW, h, r)}"></path>`;
+      }).join('');
+
+      const every = n > 40 ? 14 : n > 10 ? 7 : 1;
+      const labels = series.map((s, i) => (n - 1 - i) % every === 0
+        ? `<text class="axis-label" x="${i * slot + slot / 2}" y="${H - 4}" text-anchor="middle">${shortDay(s.day)}</text>` : '').join('');
+
+      el.innerHTML = `<svg viewBox="0 0 ${W} ${H}">${grid}${bars}${labels}</svg>`;
+      el.appendChild(tip);
+
+      const svg = el.querySelector('svg');
+      svg.addEventListener('mousemove', (e) => {
+        const hit = e.target.closest('.bar-hit, .bar'); if (!hit) return;
+        const i = Number(hit.dataset.i), s = series[i];
+        const rect = el.getBoundingClientRect();
+        const cx = ((i * slot + slot / 2) / W) * rect.width;
+        const cy = ((y(s.views)) / H) * rect.height;
+        tip.innerHTML = `${longDay(s.day)}<br><strong>${fmt(s.views)}</strong> views · ${fmt(s.visitors)} visitor${s.visitors === 1 ? '' : 's'}`;
+        tip.classList.add('is-visible');
+        // keep the tooltip inside the chart box
+        const tw = tip.offsetWidth, th = tip.offsetHeight;
+        tip.style.left = `${Math.min(Math.max(cx, tw / 2), rect.width - tw / 2)}px`;
+        tip.style.top = `${Math.max(cy, th + 12)}px`;
+        el.querySelectorAll('.bar').forEach(b => b.classList.toggle('is-hot', Number(b.dataset.i) === i));
+      });
+      svg.addEventListener('mouseleave', () => { tip.classList.remove('is-visible'); el.querySelectorAll('.bar').forEach(b => b.classList.remove('is-hot')); });
+    }
+
+    function roundedTop(x, y, w, h, r) {
+      if (h <= 0) return '';
+      r = Math.min(r, h);
+      return `M${x},${y + h} V${y + r} Q${x},${y} ${x + r},${y} H${x + w - r} Q${x + w},${y} ${x + w},${y + r} V${y + h} Z`;
+    }
+
+    function niceTicks(max) {
+      const raw = max / 3;
+      const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+      const step = [1, 2, 5, 10].map(m => m * mag).find(s => s >= raw) || mag * 10;
+      const top = Math.ceil(max / step) * step;
+      const values = []; for (let v = step; v <= top; v += step) values.push(v);
+      return { max: top, values };
+    }
+
+    function renderHours(hours) {
+      const max = Math.max(1, ...hours);
+      $('hours').innerHTML = hours.map((n, h) => `<span style="height:${(n / max) * 100}%" title="${String(h).padStart(2, '0')}:00 UTC · ${fmt(n)} views"></span>`).join('');
+    }
+
+    const shortDay = (iso) => new Date(iso + 'T00:00:00Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+    const longDay = (iso) => new Date(iso + 'T00:00:00Z').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+    const flag = (cc) => /^[A-Z]{2}$/.test(cc) ? String.fromCodePoint(...[...cc].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) : '';
+    const regionNames = typeof Intl.DisplayNames === 'function' ? new Intl.DisplayNames([navigator.language], { type: 'region' }) : null;
+    const regionName = (cc) => { try { return regionNames?.of(cc) || cc; } catch (e) { return cc; } };
+    const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    let resizeT; new ResizeObserver(() => { clearTimeout(resizeT); resizeT = setTimeout(() => { if (lastSeries) renderChart(lastSeries); }, 120); }).observe($('chart'));
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && !dash.hidden) load(); });
+    load();
+  </script>
+</body>
+
+</html>

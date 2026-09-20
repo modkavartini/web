@@ -39,7 +39,7 @@ class GitHubDataFetcher {
             console.log(`Fetching GitHub data for ${repo.name}...`);
 
             // Fetch repo info (stars, language)
-            const repoResponse = await fetch(`https://api.github.com/repos/${repo.owner}/${repo.name}`);
+            const repoResponse = await fetch(`/api/github?repo=${repo.owner}/${repo.name}`);
 
             if (!repoResponse.ok) {
                 console.warn(`GitHub API error for ${repo.name}: ${repoResponse.status}, using fallback`);
@@ -65,7 +65,7 @@ class GitHubDataFetcher {
             let releaseTag = null;
             let totalDownloads = 0;
             try {
-                const releasesResponse = await fetch(`https://api.github.com/repos/${repo.owner}/${repo.name}/releases`);
+                const releasesResponse = await fetch(`/api/github?releases=${repo.owner}/${repo.name}`);
                 if (releasesResponse.ok) {
                     const releasesData = await releasesResponse.json();
                     if (releasesData.length > 0) {

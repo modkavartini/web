@@ -323,26 +323,16 @@
         </div>
       </article>
 
-      <!-- Discord Status Widget -->
-      <article class="widget widget--blue col-span-4 fade-in-up stagger-3" id="discord-widget">
+      <!-- GitHub Activity Widget -->
+      <article class="widget widget--blue col-span-4 fade-in-up stagger-3" id="github-widget">
         <div class="widget__header">
-          <span class="widget__icon"><span class="material-symbols-rounded">forum</span></span>
-          <span class="widget__title">Discord Presence</span>
+          <span class="widget__icon"><span class="material-symbols-rounded">commit</span></span>
+          <span class="widget__title">GitHub Activity</span>
+          <a href="https://github.com/modkavartini" target="_blank" rel="noopener" class="github-stats" id="github-stats" title="@modkavartini on GitHub">@modkavartini</a>
         </div>
         <div class="widget__content">
-          <div class="discord-widget">
-            <img src="https://api.lanyard.rest/944986926400811008.png" alt="Discord Avatar"
-              class="discord-widget__avatar" id="discord-avatar">
-            <div class="discord-widget__info">
-              <span class="discord-widget__username" id="discord-username">modkavartini</span>
-              <div class="discord-widget__status">
-                <span class="status-dot status-dot--offline" id="discord-status-dot"></span>
-                <span id="discord-status-text">Offline</span>
-              </div>
-            </div>
-          </div>
-          <div class="discord-widget__activity" id="discord-activity" style="display: none;">
-            <span id="discord-activity-text"></span>
+          <div class="github-activity" id="github-activity">
+            <p class="github-event__empty">Fetching recent activity...</p>
           </div>
         </div>
       </article>
@@ -661,11 +651,12 @@
   </nav>
 
   <!-- Scripts -->
-  <script src="scripts/lanyard.js"></script>
   <script src="scripts/spotify.js"></script>
   <script src="scripts/dock-fluid.js"></script>
   <script src="scripts/app.js"></script>
   <script src="scripts/github-data.js"></script>
+  <script src="scripts/github-activity.js"></script>
+  <script src="scripts/analytics.js" defer></script>
 </body>
 
 </html>

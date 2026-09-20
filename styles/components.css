@@ -1339,54 +1339,114 @@ a.project-widget .project-card__tagline {
 }
 
 /* ========================================
-   DISCORD WIDGET
+   GITHUB ACTIVITY WIDGET
    ======================================== */
-.discord-widget {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-}
-
-.discord-widget__avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--ctp-surface1);
-}
-
-.discord-widget__info {
-    flex: 1;
-}
-
-.discord-widget__username {
-    font-family: var(--font-display);
-    font-size: var(--text-base);
-    font-weight: 600;
-    color: var(--color-text-primary);
-}
-
-.discord-widget__status {
+.github-stats {
+    margin-left: auto;
     display: flex;
     align-items: center;
     gap: var(--space-sm);
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-    margin-top: var(--space-xs);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    transition: color var(--transition-fast);
 }
 
-.discord-widget__activity {
-    margin-top: var(--space-sm);
-    padding: var(--space-sm);
+.github-stats:hover {
+    color: var(--ctp-blue);
+}
+
+.github-stats__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.github-stats__item .material-symbols-rounded {
+    font-size: 14px;
+}
+
+.github-activity {
+    display: flex;
+    flex-direction: column;
+}
+
+.github-event {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--ctp-surface0);
+    color: inherit;
+    text-decoration: none;
+    min-width: 0;
+}
+
+.github-event:last-child {
+    border-bottom: none;
+}
+
+.github-event__icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
     background: var(--ctp-surface0);
-    border-radius: var(--radius-md);
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
+    color: var(--ctp-blue);
+    transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-.discord-widget__activity-name {
-    color: var(--ctp-lavender);
+.github-event__icon .material-symbols-rounded {
+    font-size: 16px;
+}
+
+.github-event:hover .github-event__icon {
+    background: var(--ctp-blue);
+    color: var(--ctp-crust);
+}
+
+.github-event__body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.github-event__text {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.35;
+}
+
+.github-event__text strong {
+    font-family: var(--font-display);
     font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.github-event__detail {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+.github-event__time {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.github-event__empty {
+    margin: 0;
+    padding: var(--space-md) 0;
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--ctp-overlay1);
 }
 
 /* ========================================
@@ -1403,7 +1463,7 @@ a.project-widget .project-card__tagline {
         grid-column: span 4;
     }
 
-    .bento-grid #discord-widget,
+    .bento-grid #github-widget,
     .bento-grid #spotify-widget,
     .bento-grid .project-widget {
         grid-column: span 3;
@@ -1418,7 +1478,7 @@ a.project-widget .project-card__tagline {
 @media (max-width: 480px) {
     .bento-grid .avatar-widget,
     .bento-grid .bio-widget,
-    .bento-grid #discord-widget,
+    .bento-grid #github-widget,
     .bento-grid #spotify-widget,
     .bento-grid .project-widget {
         grid-column: span 1;

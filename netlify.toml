@@ -9,6 +9,12 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+# Analytics dashboard
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
 # Redirects for clean URLs
 [[redirects]]
   from = "/*"
@@ -26,6 +32,12 @@
 
 # Unversioned filenames: let browsers keep a copy but re-check it on each
 # visit (Netlify answers with 304 via ETag), so deploys show up immediately.
+[[headers]]
+  for = "/admin"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+
 [[headers]]
   for = "/styles/*"
   [headers.values]
