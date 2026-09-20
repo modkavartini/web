@@ -9,7 +9,7 @@ const GH_EVENTS_URL = '/api/github';
 const GH_USER_URL = '/api/github?user';
 const GH_CACHE_KEY = 'modka:github-activity';
 const GH_CACHE_MS = 5 * 60 * 1000;
-const GH_MAX_ITEMS = 4;
+const GH_MAX_ITEMS = 6;
 
 class GitHubActivity {
   constructor() {
