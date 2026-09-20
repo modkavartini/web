@@ -6,6 +6,7 @@
  *   /api/github?user                 → GH_USER's profile (repos, followers)
  *   /api/github?repo=owner/name      → repo metadata
  *   /api/github?releases=owner/name  → releases list
+ *   /api/github?commit=owner/name/sha → one commit (cached for a day)
  *
  * Optional: set GITHUB_TOKEN (a fine-grained token with no permissions is
  * enough) to raise the upstream limit to 5000 req/h.
@@ -20,9 +21,16 @@ export default async (req) => {
   const url = new URL(req.url);
   const repo = url.searchParams.get('repo');
   const releases = url.searchParams.get('releases');
+  const commit = url.searchParams.get('commit');
 
   let upstream;
-  if (repo) {
+  let ttl = CACHE_SECONDS;
+  if (commit) {
+    const m = commit.match(/^([\w-][\w.-]*\/[\w-][\w.-]*)\/([0-9a-f]{7,40})$/);
+    if (!m) return json({ error: 'bad commit' }, 400);
+    upstream = `${API}/repos/${m[1]}/commits/${m[2]}`;
+    ttl = 86400;
+  } else if (repo) {
     if (!REPO_RE.test(repo)) return json({ error: 'bad repo' }, 400);
     upstream = `${API}/repos/${repo}`;
   } else if (releases) {
@@ -47,8 +55,8 @@ export default async (req) => {
   const headersOut = { 'Content-Type': 'application/json', 'X-Upstream-Remaining': res.headers.get('x-ratelimit-remaining') ?? '' };
   if (res.ok) {
     // browser: 5 min; Netlify edge: 5 min, then refresh in the background
-    headersOut['Cache-Control'] = `public, max-age=${CACHE_SECONDS}`;
-    headersOut['Netlify-CDN-Cache-Control'] = `public, s-maxage=${CACHE_SECONDS}, stale-while-revalidate=${CACHE_SECONDS * 4}, durable`;
+    headersOut['Cache-Control'] = `public, max-age=${ttl}`;
+    headersOut['Netlify-CDN-Cache-Control'] = `public, s-maxage=${ttl}, stale-while-revalidate=${ttl * 4}, durable`;
   } else {
     headersOut['Cache-Control'] = 'no-store'; // never pin a rate-limit error at the edge
   }

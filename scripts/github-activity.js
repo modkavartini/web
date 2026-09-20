@@ -40,13 +40,23 @@ class GitHubActivity {
     const events = await eventsRes.json();
     const user = userRes.ok ? await userRes.json() : null;
 
+    const items = events
+      .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
+      .map(describeEvent)
+      .filter(Boolean)
+      .slice(0, GH_MAX_ITEMS);
+
+    // The public feed omits commit messages, so look up the head commit of each push
+    await Promise.all(items.filter(i => i.commit).map(async (item) => {
+      try {
+        const res = await fetch(`/api/github?commit=${item.commit}`);
+        if (res.ok) item.detail = firstLine((await res.json()).commit?.message);
+      } catch (e) { /* leave it without a detail line */ }
+    }));
+
     const data = {
       at: Date.now(),
-      items: events
-        .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
-        .map(describeEvent)
-        .filter(Boolean)
-        .slice(0, GH_MAX_ITEMS),
+      items,
       user: user ? { repos: user.public_repos, followers: user.followers } : null
     };
     try { sessionStorage.setItem(GH_CACHE_KEY, JSON.stringify(data)); } catch (e) { /* ignore */ }
@@ -91,14 +101,12 @@ function describeEvent(event) {
 
   switch (event.type) {
     case 'PushEvent': {
-      const commits = p.commits || [];
-      const n = p.size ?? commits.length;
-      const last = commits[commits.length - 1];
+      const branch = String(p.ref || '').replace('refs/heads/', '');
       return {
         ...base,
         icon: 'commit',
-        text: `Pushed ${n} commit${n === 1 ? '' : 's'} to ${name}`,
-        detail: last ? firstLine(last.message) : null,
+        text: `Pushed to ${name}${branch && branch !== 'main' && branch !== 'master' ? ` <span class="github-event__branch">${escapeHtml(branch)}</span>` : ''}`,
+        commit: p.head ? `${repo}/${p.head}` : null,
         url: p.head ? `${repoUrl}/commit/${p.head}` : `${repoUrl}/commits`
       };
     }
